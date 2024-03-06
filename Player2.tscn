@@ -1,0 +1,26 @@
+[gd_scene load_steps=6 format=3 uid="uid://c006rol7tc8sh"]
+
+[ext_resource type="Script" path="res://playerScript2.cs" id="1_x53vs"]
+[ext_resource type="Shader" path="res://playerShader.gdshader" id="2_st8gc"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_x6l15"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_lwe32"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_drcw4"]
+render_priority = 0
+shader = ExtResource("2_st8gc")
+
+[node name="Player" type="RigidBody3D"]
+lock_rotation = true
+script = ExtResource("1_x53vs")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("CapsuleShape3D_x6l15")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("CapsuleMesh_lwe32")
+surface_material_override/0 = SubResource("ShaderMaterial_drcw4")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.923866, 0.382716, 0, -0.382716, 0.923866, 0, 1.49112, 2.12305)
