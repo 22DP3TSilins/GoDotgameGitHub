@@ -1,11 +1,14 @@
 shader_type spatial;
 
+uniform sampler2D inputTexture;
+
 void vertex() {
 	// Called for every vertex the material is visible on.
 }
 
 void fragment() {
 	// Called for every pixel the material is visible on.
+	ALBEDO.rgb = texture(inputTexture, UV).rgb;
 }
 
 //void light() {

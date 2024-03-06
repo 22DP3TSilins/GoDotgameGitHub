@@ -1,0 +1,33 @@
+[gd_scene load_steps=7 format=3 uid="uid://bwox0pt6e740q"]
+
+[ext_resource type="Script" path="res://Scripts/Player/player.cs" id="1_m8svn"]
+[ext_resource type="Shader" path="res://Shaders/Player/playerShader.gdshader" id="2_iolwt"]
+[ext_resource type="Texture2D" uid="uid://bkwfgpgx73hss" path="res://icon.svg" id="3_q66f5"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_jc4pe"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_q81o0"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_hxm4g"]
+render_priority = 0
+shader = ExtResource("2_iolwt")
+shader_parameter/inputTexture = ExtResource("3_q66f5")
+
+[node name="Player_character_body" type="CharacterBody3D"]
+rotation_edit_mode = 1
+axis_lock_angular_y = true
+script = ExtResource("1_m8svn")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("CapsuleShape3D_jc4pe")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("CapsuleMesh_q81o0")
+surface_material_override/0 = SubResource("ShaderMaterial_hxm4g")
+
+[node name="CameraRig" type="Node3D" parent="."]
+
+[node name="RotY" type="Node3D" parent="CameraRig"]
+
+[node name="Camera" type="Camera3D" parent="CameraRig/RotY"]
+transform = Transform3D(1, 0, 0, 0, 0.923866, 0.382716, 0, -0.382716, 0.923866, 0, 1.9754, 4.10751)
