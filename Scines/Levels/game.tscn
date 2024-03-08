@@ -1,9 +1,37 @@
-[gd_scene load_steps=10 format=3 uid="uid://crwoedlavaj88"]
+[gd_scene load_steps=17 format=3 uid="uid://crwoedlavaj88"]
 
 [ext_resource type="PackedScene" uid="uid://bwox0pt6e740q" path="res://Scines/Player/player.tscn" id="1_m18n4"]
+[ext_resource type="Shader" path="res://Shaders/Enviorment/Maze_floor/floor1.gdshader" id="1_p00bj"]
 [ext_resource type="Texture2D" uid="uid://bkwfgpgx73hss" path="res://icon.svg" id="2_snsk5"]
+[ext_resource type="Texture2D" uid="uid://ct5lb3l6nlqwl" path="res://Noise/random noise 1d.png" id="2_yhuml"]
+[ext_resource type="Texture2D" uid="uid://78n368m60klm" path="res://Noise/random noise 1d 90deg.png" id="3_kvds2"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_m1ed2"]
+seed = 3
+frequency = 0.0132
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_lnm3p"]
+generate_mipmaps = false
+seamless = true
+seamless_blend_skirt = 0.277
+noise = SubResource("FastNoiseLite_m1ed2")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_eyoq8"]
+render_priority = 0
+shader = ExtResource("1_p00bj")
+shader_parameter/noiseAmount = 0.1
+shader_parameter/base_color = Color(0.498039, 0.443137, 0.407843, 1)
+shader_parameter/line_color = Color(0.439216, 0.392157, 0.231373, 1)
+shader_parameter/tiling = 0.1
+shader_parameter/lineSize = 0.004
+shader_parameter/TILESIZE = 2048.0
+shader_parameter/scaleOfNode = 10.0
+shader_parameter/noise = SubResource("NoiseTexture2D_lnm3p")
+shader_parameter/noise_1d_X = ExtResource("2_yhuml")
+shader_parameter/noise_1d_Y = ExtResource("3_kvds2")
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_osmkl"]
+material = SubResource("ShaderMaterial_eyoq8")
 
 [sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_ewtdb"]
 data = PackedVector3Array(1, 0, 1, -1, 0, 1, 1, 0, -1, -1, 0, 1, -1, 0, -1, 1, 0, -1)
@@ -22,13 +50,16 @@ material = SubResource("StandardMaterial3D_e1cc6")
 [sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_0nvin"]
 data = PackedVector3Array(-0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, -0.5, -0.5, -0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, -0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, 0.5, 0.5, -0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, 0.5, 0.5, -0.5, 0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, -0.5)
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fjpqd"]
+albedo_texture = ExtResource("2_snsk5")
+
 [sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_vqjeo"]
 data = PackedVector3Array(-0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, -0.5, -0.5, -0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, -0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, 0.5, 0.5, -0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, 0.5, 0.5, -0.5, 0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, -0.5)
 
 [node name="Node3D" type="Node3D"]
 
 [node name="floor" type="MeshInstance3D" parent="."]
-transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0, 0)
+transform = Transform3D(10, 0, 0, 0, 1, 0, 0, 0, 10, 0, 0, 0)
 mesh = SubResource("PlaneMesh_osmkl")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="floor"]
@@ -60,6 +91,7 @@ shape = SubResource("ConcavePolygonShape3D_0nvin")
 transform = Transform3D(7, 0, 0, 0, 1, 0, 0, 0, 2, -2.98281, 0.543285, -2.651)
 mesh = SubResource("BoxMesh_jbkgy")
 skeleton = NodePath("../MeshInstance3D")
+surface_material_override/0 = SubResource("StandardMaterial3D_fjpqd")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="MeshInstance3D2"]
 
