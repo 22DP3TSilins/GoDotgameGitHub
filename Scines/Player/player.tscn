@@ -30,7 +30,10 @@ surface_material_override/0 = SubResource("ShaderMaterial_hxm4g")
 [node name="RotY" type="Node3D" parent="CameraRig"]
 
 [node name="Camera" type="Camera3D" parent="CameraRig/RotY"]
-transform = Transform3D(1, 0, 0, 0, 0.923866, 0.382716, 0, -0.382716, 0.923866, 0, 2, 4)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 4)
+doppler_tracking = 2
+fov = 90.0
+near = 0.001
 
 [node name="CameraColisionDetector" type="RayCast3D" parent="CameraRig/RotY"]
-target_position = Vector3(0, 2, 4)
+target_position = Vector3(0, 0, 4)

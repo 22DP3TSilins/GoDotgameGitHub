@@ -1,0 +1,5 @@
+[gd_scene load_steps=2 format=3 uid="uid://crwcmixi16fqr"]
+
+[ext_resource type="PackedScene" uid="uid://d1xtg12ntkn2y" path="res://Blender/Meshes/Labyrinth/LabyrinthAssets.glb" id="1_5gljt"]
+
+[node name="LabyrinthAssets" instance=ExtResource("1_5gljt")]

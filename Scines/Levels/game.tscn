@@ -1,8 +1,10 @@
-[gd_scene load_steps=15 format=3 uid="uid://crwoedlavaj88"]
+[gd_scene load_steps=17 format=3 uid="uid://crwoedlavaj88"]
 
+[ext_resource type="Script" path="res://Scripts/Maze/AssynhronousLoading.cs" id="1_a6j46"]
 [ext_resource type="Shader" path="res://Shaders/Enviorment/Maze_floor/new_shader.gdshader" id="1_b7vy1"]
 [ext_resource type="PackedScene" uid="uid://bwox0pt6e740q" path="res://Scines/Player/player.tscn" id="1_m18n4"]
 [ext_resource type="Texture2D" uid="uid://bkwfgpgx73hss" path="res://icon.svg" id="2_snsk5"]
+[ext_resource type="PackedScene" uid="uid://biwpb3y5havo8" path="res://Blender/Meshes/Labyrinth/testMesh.blend" id="5_7k674"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_m1ed2"]
 seed = 3
@@ -52,14 +54,15 @@ albedo_texture = ExtResource("2_snsk5")
 data = PackedVector3Array(-0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, -0.5, -0.5, -0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, -0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, 0.5, 0.5, -0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, 0.5, 0.5, -0.5, 0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, -0.5)
 
 [node name="Node3D" type="Node3D"]
+script = ExtResource("1_a6j46")
 
-[node name="floor" type="MeshInstance3D" parent="."]
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="."]
 transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0, 0)
 mesh = SubResource("PlaneMesh_osmkl")
 
-[node name="StaticBody3D" type="StaticBody3D" parent="floor"]
+[node name="StaticBody3D" type="StaticBody3D" parent="MeshInstance3D3"]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="floor/StaticBody3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="MeshInstance3D3/StaticBody3D"]
 shape = SubResource("ConcavePolygonShape3D_ewtdb")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
@@ -92,3 +95,8 @@ surface_material_override/0 = SubResource("StandardMaterial3D_fjpqd")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="MeshInstance3D2/StaticBody3D"]
 shape = SubResource("ConcavePolygonShape3D_vqjeo")
+
+[node name="Meshes" type="Node3D" parent="."]
+
+[node name="testMesh" parent="." instance=ExtResource("5_7k674")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 11.1903)
