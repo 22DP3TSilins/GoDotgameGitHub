@@ -10,15 +10,20 @@ public partial class player : CharacterBody3D
 	Vector3 velocity = Vector3.Zero;
 	Camera3D camera = null;
 	Node3D cameraRotY = null;
+	RayCast3D cameraColisionDetector = null;
 	
 	public override void _Ready() {
 		Input.MouseMode = Input.MouseModeEnum.Captured;
 		camera = GetNode<Camera3D>("CameraRig/RotY/Camera");
 		cameraRotY = GetNode<Node3D>("CameraRig/RotY");
+		cameraColisionDetector = GetNode<RayCast3D>("CameraRig/RotY/CameraColisionDetector");
 	}
 	
 	public const float Speed = 5.0f;
 	public const float JumpVelocity = 5.2f;
+
+	// Maximum Camera distance from player camera is (x = 0; y = 2; z = 4) distance is aproximatly sqrt(0^2 + 2^2 + 4^2) ~ 4.472135955
+	const float MaxCameraDistance = 4.472135955f; 
 
 	// Get the gravity from the project settings to be synced with RigidBody nodes.
 	public float gravity = ProjectSettings.GetSetting("physics/3d/default_gravity").AsSingle();
@@ -69,6 +74,27 @@ public partial class player : CharacterBody3D
 			Vector2 motion = -m_event.Relative * mouseSensitivity;
 			this.RotateY(motion.X);
 			cameraRotY.RotateX(motion.Y);
+			GD.Print(cameraRotY.GlobalRotationDegrees.X);
+
+			if (cameraRotY.GlobalRotationDegrees.X > 65 || cameraRotY.GlobalRotationDegrees.X < 65 - 180) {
+				GD.Print("aaa");
+				cameraRotY.RotateX(-(180 - cameraRotY.RotationDegrees.X));
+			}
+			
+			
+			cameraColisionDetector.ForceRaycastUpdate();
+			Vector3 posOfCameraColision;
+			if (cameraColisionDetector.IsColliding()) {
+				posOfCameraColision = this.ToLocal(cameraColisionDetector.GetCollisionPoint());
+
+				if (MaxCameraDistance > posOfCameraColision.Length()) {
+					camera.Translate(posOfCameraColision - camera.Position);
+				} else {
+					camera.Translate(new Vector3(0.0f, 2.0f, 4.0f) - camera.Position);
+				}
+			} else {
+				camera.Translate(new Vector3(0.0f, 2.0f, 4.0f) - camera.Position);
+			}
 			
 			
 		}
