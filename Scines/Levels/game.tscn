@@ -1,9 +1,11 @@
-[gd_scene load_steps=17 format=3 uid="uid://crwoedlavaj88"]
+[gd_scene load_steps=24 format=3 uid="uid://crwoedlavaj88"]
 
 [ext_resource type="Script" path="res://Scripts/Maze/AssynhronousLoading.cs" id="1_a6j46"]
 [ext_resource type="Shader" path="res://Shaders/Enviorment/Maze_floor/new_shader.gdshader" id="1_b7vy1"]
+[ext_resource type="Script" path="res://Scripts/Maze/MazeAlgoritm.cs" id="1_ifcgi"]
 [ext_resource type="PackedScene" uid="uid://bwox0pt6e740q" path="res://Scines/Player/player.tscn" id="1_m18n4"]
 [ext_resource type="Texture2D" uid="uid://bkwfgpgx73hss" path="res://icon.svg" id="2_snsk5"]
+[ext_resource type="Shader" path="res://Shaders/Enviorment/Maze_floor/floor1.gdshader" id="5_0mlbh"]
 [ext_resource type="PackedScene" uid="uid://biwpb3y5havo8" path="res://Blender/Meshes/Labyrinth/testMesh.blend" id="5_7k674"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_m1ed2"]
@@ -53,6 +55,30 @@ albedo_texture = ExtResource("2_snsk5")
 [sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_vqjeo"]
 data = PackedVector3Array(-0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, -0.5, -0.5, -0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, -0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, 0.5, 0.5, -0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, 0.5, 0.5, -0.5, 0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, -0.5)
 
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_d20lk"]
+frequency = 0.0174
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_uod8q"]
+noise = SubResource("FastNoiseLite_d20lk")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_u85dc"]
+render_priority = 0
+shader = ExtResource("5_0mlbh")
+shader_parameter/noiseAmount = 0.08
+shader_parameter/base_color = Color(0.537255, 0.482353, 0.447059, 1)
+shader_parameter/tiling = 0.0
+shader_parameter/lineSize = 0.1
+shader_parameter/scaleOfNode = 10.0
+shader_parameter/noise = SubResource("NoiseTexture2D_uod8q")
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_tkfys"]
+material = SubResource("ShaderMaterial_u85dc")
+size = Vector2(50, 50)
+center_offset = Vector3(0, -2.5, 0)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_lyx2r"]
+data = PackedVector3Array(25, -2.5, 25, -25, -2.5, 25, 25, -2.5, -25, -25, -2.5, 25, -25, -2.5, -25, 25, -2.5, -25)
+
 [node name="Node3D" type="Node3D"]
 script = ExtResource("1_a6j46")
 
@@ -97,6 +123,19 @@ surface_material_override/0 = SubResource("StandardMaterial3D_fjpqd")
 shape = SubResource("ConcavePolygonShape3D_vqjeo")
 
 [node name="Meshes" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9807, -2.64256, 0.402968)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Meshes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30, 0, 28)
+mesh = SubResource("PlaneMesh_tkfys")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Meshes/MeshInstance3D"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Meshes/MeshInstance3D/StaticBody3D"]
+shape = SubResource("ConcavePolygonShape3D_lyx2r")
 
 [node name="testMesh" parent="." instance=ExtResource("5_7k674")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 11.1903)
+
+[node name="Node3D" type="Node3D" parent="."]
+script = ExtResource("1_ifcgi")

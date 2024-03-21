@@ -26,7 +26,7 @@ public partial class player : CharacterBody3D
 	float LastJump = 1.0f;
 
 	// Maximum Camera distance from player camera is (x = 0; y = 2; z = 4) distance is aproximatly sqrt(0^2 + 2^2 + 4^2) ~ 4.472135955
-	const float MaxCameraDistance = 4.0f; 
+	const float MaxCameraDistance = 1.8f; 
 
 	// Get the gravity from the project settings to be synced with RigidBody nodes.
 	public float gravity = ProjectSettings.GetSetting("physics/3d/default_gravity").AsSingle();
@@ -126,11 +126,11 @@ public partial class player : CharacterBody3D
 					camera.Position = posOfCameraColision;
 
 				} else {
-					camera.Translate(new Vector3(0.0f, 0.0f, 4.0f) - camera.Position);
+					camera.Translate(new Vector3(0.0f, 0.0f, MaxCameraDistance) - camera.Position);
 				}
 				
 			} else {
-				camera.Translate(new Vector3(0.0f, 0.0f, 4.0f) - camera.Position);
+				camera.Translate(new Vector3(0.0f, 0.0f, MaxCameraDistance) - camera.Position);
 			}
 	}
 	

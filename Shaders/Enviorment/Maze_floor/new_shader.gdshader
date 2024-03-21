@@ -46,7 +46,7 @@ void fragment() {
 	
 	ALBEDO = base_color.rgb;
 	ALBEDO -= texture(noise, UV * scale / 10.0).rgb * noiseAmount;
-	ALBEDO *= distFromLineCenterXnorm;
+	// ALBEDO *= distFromLineCenterXnorm;
 	//float a = 0.5;
 	//ALBEDO = vec3(0.0, 0.0, 0.0);
 	//if (distFromLineCenterXnorm > a) {
