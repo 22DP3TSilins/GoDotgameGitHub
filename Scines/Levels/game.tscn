@@ -73,11 +73,11 @@ shader_parameter/noise = SubResource("NoiseTexture2D_uod8q")
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_tkfys"]
 material = SubResource("ShaderMaterial_u85dc")
-size = Vector2(50, 50)
+size = Vector2(60, 60)
 center_offset = Vector3(0, -2.5, 0)
 
-[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_lyx2r"]
-data = PackedVector3Array(25, -2.5, 25, -25, -2.5, 25, 25, -2.5, -25, -25, -2.5, 25, -25, -2.5, -25, 25, -2.5, -25)
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_dvr5e"]
+data = PackedVector3Array(30, -2.5, 30, -30, -2.5, 30, 30, -2.5, -30, -30, -2.5, 30, -30, -2.5, -30, 30, -2.5, -30)
 
 [node name="Node3D" type="Node3D"]
 script = ExtResource("1_a6j46")
@@ -122,20 +122,20 @@ surface_material_override/0 = SubResource("StandardMaterial3D_fjpqd")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="MeshInstance3D2/StaticBody3D"]
 shape = SubResource("ConcavePolygonShape3D_vqjeo")
 
-[node name="Meshes" type="Node3D" parent="."]
+[node name="MazeWalls" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9807, -2.64256, 0.402968)
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Meshes"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30, 0, 28)
+[node name="MeshInstance3D" type="MeshInstance3D" parent="MazeWalls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 37, 0, 35)
 mesh = SubResource("PlaneMesh_tkfys")
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Meshes/MeshInstance3D"]
+[node name="StaticBody3D" type="StaticBody3D" parent="MazeWalls/MeshInstance3D"]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Meshes/MeshInstance3D/StaticBody3D"]
-shape = SubResource("ConcavePolygonShape3D_lyx2r")
+[node name="CollisionShape3D" type="CollisionShape3D" parent="MazeWalls/MeshInstance3D/StaticBody3D"]
+shape = SubResource("ConcavePolygonShape3D_dvr5e")
 
 [node name="testMesh" parent="." instance=ExtResource("5_7k674")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 11.1903)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.297093, -0.0433149, 13.2705)
 
 [node name="Node3D" type="Node3D" parent="."]
 script = ExtResource("1_ifcgi")

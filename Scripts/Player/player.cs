@@ -7,6 +7,7 @@ public partial class player : CharacterBody3D
 	[Export] public float acceleration = 1.0f / 0.5f;
 	[Export] public float stopping_acceleration = 10.0f;
 	[Export] public float mouseSensitivity = 0.003f;
+	
 	Vector3 velocity = Vector3.Zero;
 	Camera3D camera = null;
 	Node3D cameraRotX = null;
@@ -26,7 +27,8 @@ public partial class player : CharacterBody3D
 	float LastJump = 1.0f;
 
 	// Maximum Camera distance from player camera is (x = 0; y = 2; z = 4) distance is aproximatly sqrt(0^2 + 2^2 + 4^2) ~ 4.472135955
-	const float MaxCameraDistance = 1.8f; 
+	[Export] public float MaxCameraDistance = 1.8f; 
+	[Export] public float CameraOfset = 1.0f; 
 
 	// Get the gravity from the project settings to be synced with RigidBody nodes.
 	public float gravity = ProjectSettings.GetSetting("physics/3d/default_gravity").AsSingle();
@@ -91,8 +93,8 @@ public partial class player : CharacterBody3D
 			var m_event = e as InputEventMouseMotion;
 			Vector2 motion = -m_event.Relative * mouseSensitivity;
 
-			GD.Print($"rotation: {cameraRotX.GlobalRotationDegrees.X}\nmotion: {motion.Y}");
-			GD.Print($"full rotation: {cameraRotX.GlobalRotationDegrees.X + motion.Y}");
+			// GD.Print($"rotation: {cameraRotX.GlobalRotationDegrees.X}\nmotion: {motion.Y}");
+			// GD.Print($"full rotation: {cameraRotX.GlobalRotationDegrees.X + motion.Y}");
 			RotateY(motion.X);
 			// float Precision = 1.0f;
 			if (cameraRotX.GlobalRotationDegrees.X + motion.Y <= -89.997f) {
@@ -104,6 +106,7 @@ public partial class player : CharacterBody3D
 			} else {
 				cameraRotX.RotateX(motion.Y);
 			}
+			
 			GD.Print('\n');
 			HandleCameraCollision();
 			
@@ -126,11 +129,11 @@ public partial class player : CharacterBody3D
 					camera.Position = posOfCameraColision;
 
 				} else {
-					camera.Translate(new Vector3(0.0f, 0.0f, MaxCameraDistance) - camera.Position);
+					camera.Position = new Vector3(CameraOfset, 0.0f, MaxCameraDistance);
 				}
 				
 			} else {
-				camera.Translate(new Vector3(0.0f, 0.0f, MaxCameraDistance) - camera.Position);
+				camera.Position = new Vector3(CameraOfset, 0.0f, MaxCameraDistance);
 			}
 	}
 	

@@ -1,15 +1,15 @@
-[gd_scene load_steps=7 format=3 uid="uid://ce54rkajcrp7h"]
+[gd_scene load_steps=11 format=3 uid="uid://ce54rkajcrp7h"]
 
 [ext_resource type="Shader" path="res://Shaders/Enviorment/Maze_floor/new_shader.gdshader" id="1_odyxy"]
 
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_uroqd"]
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_y65bq"]
 frequency = 0.038
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_2hcbg"]
 seamless = true
-noise = SubResource("FastNoiseLite_uroqd")
+noise = SubResource("FastNoiseLite_y65bq")
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_xltcv"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ws37a"]
 render_priority = 0
 shader = ExtResource("1_odyxy")
 shader_parameter/noiseAmount = 0.124
@@ -21,18 +21,56 @@ shader_parameter/lineSize = 0.185
 shader_parameter/noise = SubResource("NoiseTexture2D_2hcbg")
 
 [sub_resource type="BoxMesh" id="BoxMesh_0bprw"]
-material = SubResource("ShaderMaterial_xltcv")
-size = Vector3(4, 5, 1)
+material = SubResource("ShaderMaterial_ws37a")
+size = Vector3(3, 5, 1)
 
-[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_mlu6e"]
-data = PackedVector3Array(-2, 2.5, 0.5, 2, 2.5, 0.5, -2, -2.5, 0.5, 2, 2.5, 0.5, 2, -2.5, 0.5, -2, -2.5, 0.5, 2, 2.5, -0.5, -2, 2.5, -0.5, 2, -2.5, -0.5, -2, 2.5, -0.5, -2, -2.5, -0.5, 2, -2.5, -0.5, 2, 2.5, 0.5, 2, 2.5, -0.5, 2, -2.5, 0.5, 2, 2.5, -0.5, 2, -2.5, -0.5, 2, -2.5, 0.5, -2, 2.5, -0.5, -2, 2.5, 0.5, -2, -2.5, -0.5, -2, 2.5, 0.5, -2, -2.5, 0.5, -2, -2.5, -0.5, 2, 2.5, 0.5, -2, 2.5, 0.5, 2, 2.5, -0.5, -2, 2.5, 0.5, -2, 2.5, -0.5, 2, 2.5, -0.5, -2, -2.5, 0.5, 2, -2.5, 0.5, -2, -2.5, -0.5, 2, -2.5, 0.5, 2, -2.5, -0.5, -2, -2.5, -0.5)
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_wixd5"]
+render_priority = 0
+shader = ExtResource("1_odyxy")
+shader_parameter/noiseAmount = 0.08
+shader_parameter/base_color = Color(0.537255, 0.482353, 0.447059, 1)
+shader_parameter/xTiling = null
+shader_parameter/yTiling = null
+shader_parameter/scale = 8.16
+shader_parameter/lineSize = 0.185
+
+[sub_resource type="PrismMesh" id="PrismMesh_s0vjy"]
+material = SubResource("ShaderMaterial_wixd5")
+size = Vector3(1, 0.5, 5)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_tfdh7"]
+data = PackedVector3Array(0, 0.25, 2.5, 0.5, -0.25, 2.5, -0.5, -0.25, 2.5, 0, 0.25, -2.5, -0.5, -0.25, -2.5, 0.5, -0.25, -2.5, 0, 0.25, 2.5, 0, 0.25, -2.5, 0.5, -0.25, 2.5, 0, 0.25, -2.5, 0.5, -0.25, -2.5, 0.5, -0.25, 2.5, 0, 0.25, -2.5, 0, 0.25, 2.5, -0.5, -0.25, -2.5, 0, 0.25, 2.5, -0.5, -0.25, 2.5, -0.5, -0.25, -2.5, -0.5, -0.25, 2.5, 0.5, -0.25, 2.5, -0.5, -0.25, -2.5, 0.5, -0.25, 2.5, 0.5, -0.25, -2.5, -0.5, -0.25, -2.5)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_efrcr"]
+data = PackedVector3Array(0, 0.25, 2.5, 0.5, -0.25, 2.5, -0.5, -0.25, 2.5, 0, 0.25, -2.5, -0.5, -0.25, -2.5, 0.5, -0.25, -2.5, 0, 0.25, 2.5, 0, 0.25, -2.5, 0.5, -0.25, 2.5, 0, 0.25, -2.5, 0.5, -0.25, -2.5, 0.5, -0.25, 2.5, 0, 0.25, -2.5, 0, 0.25, 2.5, -0.5, -0.25, -2.5, 0, 0.25, 2.5, -0.5, -0.25, 2.5, -0.5, -0.25, -2.5, -0.5, -0.25, 2.5, 0.5, -0.25, 2.5, -0.5, -0.25, -2.5, 0.5, -0.25, 2.5, 0.5, -0.25, -2.5, -0.5, -0.25, -2.5)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_nvsrf"]
+data = PackedVector3Array(-1.5, 2.5, 0.5, 1.5, 2.5, 0.5, -1.5, -2.5, 0.5, 1.5, 2.5, 0.5, 1.5, -2.5, 0.5, -1.5, -2.5, 0.5, 1.5, 2.5, -0.5, -1.5, 2.5, -0.5, 1.5, -2.5, -0.5, -1.5, 2.5, -0.5, -1.5, -2.5, -0.5, 1.5, -2.5, -0.5, 1.5, 2.5, 0.5, 1.5, 2.5, -0.5, 1.5, -2.5, 0.5, 1.5, 2.5, -0.5, 1.5, -2.5, -0.5, 1.5, -2.5, 0.5, -1.5, 2.5, -0.5, -1.5, 2.5, 0.5, -1.5, -2.5, -0.5, -1.5, 2.5, 0.5, -1.5, -2.5, 0.5, -1.5, -2.5, -0.5, 1.5, 2.5, 0.5, -1.5, 2.5, 0.5, 1.5, 2.5, -0.5, -1.5, 2.5, 0.5, -1.5, 2.5, -0.5, 1.5, 2.5, -0.5, -1.5, -2.5, 0.5, 1.5, -2.5, 0.5, -1.5, -2.5, -0.5, 1.5, -2.5, 0.5, 1.5, -2.5, -0.5, -1.5, -2.5, -0.5)
 
 [node name="Node3D" type="Node3D"]
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 mesh = SubResource("BoxMesh_0bprw")
 
-[node name="StaticBody3D" type="StaticBody3D" parent="MeshInstance3D"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="MeshInstance3D"]
+transform = Transform3D(1.91069e-15, 1, 4.37114e-08, 4.37114e-08, -4.37114e-08, 1, 1, 0, -4.37114e-08, 1.75, 0, 0)
+mesh = SubResource("PrismMesh_s0vjy")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="MeshInstance3D/StaticBody3D"]
-shape = SubResource("ConcavePolygonShape3D_mlu6e")
+[node name="MeshInstance3D" type="MeshInstance3D" parent="MeshInstance3D/MeshInstance3D"]
+transform = Transform3D(-1, -8.74228e-08, 8.74228e-08, 8.74228e-08, -1, -8.74228e-08, 8.74228e-08, -8.74228e-08, 1, -4.23516e-22, -3.5, 0)
+mesh = SubResource("PrismMesh_s0vjy")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="MeshInstance3D/MeshInstance3D/MeshInstance3D"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="MeshInstance3D/MeshInstance3D/MeshInstance3D/StaticBody3D"]
+shape = SubResource("ConcavePolygonShape3D_tfdh7")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="MeshInstance3D/MeshInstance3D"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="MeshInstance3D/MeshInstance3D/StaticBody3D"]
+shape = SubResource("ConcavePolygonShape3D_efrcr")
+
+[node name="StaticBody3D2" type="StaticBody3D" parent="MeshInstance3D"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="MeshInstance3D/StaticBody3D2"]
+shape = SubResource("ConcavePolygonShape3D_nvsrf")

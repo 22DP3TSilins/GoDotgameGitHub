@@ -6,24 +6,24 @@ public partial class AssynhronousLoading : Node3D
 {	Node3D meshes = null;
 	public override void _Ready() {
 		ResourceLoader.LoadThreadedRequest("res://Blender/Meshes/Labyrinth/testMesh.blend");
-		meshes = GetNode<Node3D>("Meshes");
+		meshes = GetNode<Node3D>("MazeWalls");
 	}
-	int framesPassed = 0;
-	int objCreated = 0;
+	// int framesPassed = 0;
+	// int objCreated = 0;
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta)
 	{
-		framesPassed++;
-		if (framesPassed > 100) {
-			framesPassed = 0;
-			objCreated++;
-			PackedScene testScene = (PackedScene)ResourceLoader.LoadThreadedGet("res://Blender/Meshes/Labyrinth/testMesh.blend");
-			Node3D testMesh = (Node3D)testScene.Instantiate();
-			meshes.AddChild(testMesh);
-			testMesh.Position = new Vector3(3.0f + objCreated * 5.0f, 0.0f, 0.0f);
-			GD.Print("Loading...");
-
-			ResourceLoader.LoadThreadedRequest("res://Blender/Meshes/Labyrinth/testMesh.blend");
-		}
+		//framesPassed++;
+		//if (framesPassed > 100) {
+			//framesPassed = 0;
+			//objCreated++;
+			//PackedScene testScene = (PackedScene)ResourceLoader.LoadThreadedGet("res://Blender/Meshes/Labyrinth/testMesh.blend");
+			//Node3D testMesh = (Node3D)testScene.Instantiate();
+			//meshes.AddChild(testMesh);
+			//testMesh.Position = new Vector3(3.0f + objCreated * 5.0f, 0.0f, 0.0f);
+			//GD.Print("Loading...");
+//
+			//ResourceLoader.LoadThreadedRequest("res://Blender/Meshes/Labyrinth/testMesh.blend");
+		//}
 	}
 }

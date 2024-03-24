@@ -1,17 +1,19 @@
 using Godot;
 using System;
-using System.Collections.Generic;
-using System.Security.Cryptography.X509Certificates;
 
 public partial class MazeAlgoritm : Node3D
 {
-	// Called when the node enters the scene tree for the first time.
+	const int sizex = 15;
+	const int sizey = 15;
+	const int startx = 8;
+	const int starty = 8;
+	enum Wall: byte {Up = 1, Left = 2, Visited = 4, Explored = 8}
 	Node3D meshes = null;
 	public override void _Ready()
 	{
 		GD.Print("Maze is cookin...");
-		meshes = GetParent<Node3D>().GetNode<Node3D>("Meshes");
-		byte[,] walls = genRandWalls();
+		meshes = GetParent<Node3D>().GetNode<Node3D>("MazeWalls");
+		byte[,] walls = genMazeWalls();
 		AssyncLoadMaze(walls);
 	}
 
@@ -19,253 +21,143 @@ public partial class MazeAlgoritm : Node3D
 	public override void _Process(double delta)
 	{
 	}
-
 	public void AssyncLoadMaze(byte[,] walls) {
-		// PackedScene testScene = (PackedScene)ResourceLoader.LoadThreadedGet("res://Scines/Levels/wallx.tscn");
-		// List<PackedScene> wallObjArr = new List<PackedScene>();
-		
-		// int wallsx = 0;
-		// int wallsz = 0;
-
-		for (int i = 0; i < 11; i++) {
-			for (int j = 0; j < 11; j++) {
-				if ((walls[i, j] & 1) == 0) {
-					ResourceLoader.LoadThreadedRequest("res://Scines/Levels/wallx.tscn");
-				}
-				if ((walls[i, j] & 2) == 0) {
+		for (int i = 1; i < sizex + 2; i++) {
+			for (int j = 0; j < sizey + 1; j++) {
+				if (((walls[i, j] & (byte)Wall.Up) == 0) && (j != 0)) {
 					ResourceLoader.LoadThreadedRequest("res://Scines/Levels/wallz.tscn");
+				}
+				if ((walls[i, j] & (byte)Wall.Left) == 0 && (i != sizex + 1)) {
+					ResourceLoader.LoadThreadedRequest("res://Scines/Levels/wallx.tscn");
 				}
 			}
 		}
 		PackedScene testScene = null;
-		for (int i = 0; i < 11; i++) {
-			for (int j = 0; j < 11; j++) {
-				if ((walls[i, j] & 1) == 0) {
-					testScene = (PackedScene)ResourceLoader.LoadThreadedGet("res://Scines/Levels/wallx.tscn");
+		for (int i = 1; i < sizex + 2; i++) {
+			for (int j = 0; j < sizey + 1; j++) {
+				if ((walls[i, j] & (byte)Wall.Up) == 0 && (j != 0)) {
+					testScene = (PackedScene)ResourceLoader.LoadThreadedGet("res://Scines/Levels/wallz.tscn");
 					Node3D testMesh = (Node3D)testScene.Instantiate();
 					meshes.AddChild(testMesh);
 					testMesh.Position = new Vector3(3.0f + i * 4.0f, 0.0f, 3.0f + j * 4.0f);
 				}
-				if ((walls[i, j] & 2) == 0) {
-					testScene = (PackedScene)ResourceLoader.LoadThreadedGet("res://Scines/Levels/wallz.tscn");
+				if ((walls[i, j] & (byte)Wall.Left) == 0 && (i != sizex + 1)) {
+					testScene = (PackedScene)ResourceLoader.LoadThreadedGet("res://Scines/Levels/wallx.tscn");
 					Node3D testMesh = (Node3D)testScene.Instantiate();
 					meshes.AddChild(testMesh);
 					testMesh.Position = new Vector3(5.0f + i * 4.0f, 0.0f, 5.0f + j * 4.0f);
 				}
-				
-
 			}
 		}
-		
-		// Node3D testMesh = (Node3D)testScene.Instantiate();
-		// meshes.AddChild(testMesh);
-		// testMesh.Position = new Vector3(3.0f + objCreated * 5.0f, 0.0f, 0.0f);
 		GD.Print("Loading... labyrinth");
-
-		ResourceLoader.LoadThreadedRequest("res://Scines/Levels/wallx.tscn");
 	}
-
-	public byte[,] genRandWalls() {
-		const int sizex = 10;
-		const int sizey = 10;
-		
-		const int startx = 0;
-		const int starty = 0;
-
-		byte[,] walls = new byte[sizex + 1, sizey + 1];
-
-		Random rand = new Random();
-
-		for (int i = 0; i <= sizex; i++) {
-			for (int j = 0; j <= sizey; j++) {
-				walls[i, j] = (byte)rand.Next(0, 3);
-			}
-		}
-		return walls;
-	}
-
+	
 	public byte[,] genMazeWalls() {
 		Random rnd = new Random();
-
-		const int sizex = 10;
-		const int sizey = 10;
 		
-		const int startx = 0;
-		const int starty = 0;
-
 		int currentx = startx;
 		int currenty = starty;
 
-		int currentx2;
-		int currenty2;
+		byte[,] walls = new byte[sizex + 2, sizey + 2]; // 1 Up 2 Left 4 Visited 8 Explored compleatly 16 Up maze wall 32 Left maze wall;
 
-		byte[,] walls = new byte[sizex + 1, sizey + 1]; // 1 Up 2 Left 4 Visited 8 Explored compleatly 16 Up maze wall 32 Left maze wall;
+		for (int i = 0; i < sizex + 2; i++) {
+			walls[i, 0] |= (byte)Wall.Visited | (byte)Wall.Explored;
+			walls[i, sizey + 1] |= (byte)Wall.Visited | (byte)Wall.Explored;
+		}
+		for (int i = 0; i < sizey + 2; i++) {
+			walls[0, i] |= (byte)Wall.Visited | (byte)Wall.Explored;
+			walls[sizex + 1, i] |= (byte)Wall.Visited | (byte)Wall.Explored;
+		}
 
-		for (int i = 0; i < sizex + 1; i++) {
-			walls[i, 0] = 16;
-		}
-		for (int i = 0; i < sizey + 1; i++) {
-			walls[0, i] = 32;
-		}
-		walls[0, 0] = 16 + 32;
+		byte currentCell;
+		byte currentWall;
+		(int X, int Y) currentDir;
+		(int X, int Y) currentCellAround;
+		int randWall;
 
 		int[] cellWalls = new int[4];
-		int j = 0;
-		bool canExit = false;
+		(int X, int Y) [] directions = new [] { (0, 0), (0, 0), (1, 0), (0, -1) };
+		(int X, int Y) [] cellsAround = new [] { (-1, 0), (0, 1), (1, 0), (0, -1) };
 
-		// byte currentWall = 0;
+		int randDir;
 
-		// byte currentWallxp = 0;
-		// byte currentWallxm = 0;
+		while (true) {
+			walls[currentx, currenty] |= 4;
+			int j = 0;
+			for (int i = 0; i < 4; i++) {
+				try
+				{
+					currentDir = directions[i];
+					currentCellAround = cellsAround[i];
 
-		// byte currentWallyp = 0;
-		// byte currentWallym = 0;
-
-		for (int l = 0; l < 15; l++)
-		{
-			string row = "";
-			string newNum = "";
-			for (int i = 0; i <= sizex; i++) {
-				row = "";
-				for (int k = 0; k <= sizey; k++) {
-					newNum = " " + +walls[i, k];
-					row += newNum.Length == 2 ? " " + newNum : newNum;
-				}
-				GD.Print(row + "\n");
-			}
-			if (currentx == startx && currenty == starty && canExit) {
-				return walls;
-			}
-
-			ref byte currentWall = ref walls[currentx, currenty];
-
-			if (currentx < sizex) {
-				ref byte currentWallxp = ref walls[currentx + 1, currenty];
-				if (((currentWallxp & 1) == 1) && ((currentWallxp & 4) == 0)) {
-					cellWalls[j] = 3;
-					j++;
+					currentWall = walls[currentx + currentDir.X, currenty + currentDir.Y];
+					currentCell = walls[currentx + currentCellAround.X, currenty + currentCellAround.Y];
+					if(((currentCell & (byte)Wall.Visited) | (currentWall & (byte)((i % 2) + 1))) == 0) {
+						cellWalls[j] = i;
+						j++;
+					}
+				} catch (IndexOutOfRangeException) {
+					GD.Print("out of range1");
+					break;
 				}
 			}
-			if (currenty < sizey) {
-				ref byte currentWallyp = ref walls[currentx, currenty + 1];
-				if (((currentWall & 1) == 1) && ((currentWallyp & 4) == 0)) {
-					cellWalls[j] = 1;
-					j++;
-				}
-			}
-			if (currentx > 1) {
-				ref byte currentWallxm = ref walls[currentx - 1, currenty];
-				if (((currentWall & 2) == 2) && ((currentWallxm & 4) == 0)) {
-					cellWalls[j] = 2;
-					j++;
-				}
-			}
-			if (currenty > 1) {
-				ref byte currentWallyp = ref walls[currentx, currenty + 1];
-				if (((currentWallyp & 2) == 2) && ((currentWallyp & 4) == 0)) {
-					cellWalls[j] = 4;
-					j++;
-				}
-			}
-
-			GD.Print("\n");
-			j = 0;
-
-			// cellWalls = new int[4] {0b11, 0b11, 0b11, 0b11};
-			// for (int i = 1; i < 16; i++) {
-			// 	if ((walls[currentx, currenty] & (1 << i)) > 0) {
-			// 		cellWalls[i] = 1 << i;
-			// 		j++;
-			// 	}
-			// }
-			// if (currentx > 0) {
-			// 	if (((currentWall & 1) == 1) && ((currentWallxm & 4) == 0)) {
-			// 		cellWalls[j] = 1;
-			// 		j++;
-			// 	}
-			// }
-			// if (currenty < sizey) {
-			// 	if (((currentWall & 2) == 2) && ((currentWallym & 4) == 0)) {
-			// 		cellWalls[j] = 2;
-			// 		j++;
-			// 	}
-			// }
-			// if (currentx < sizex) {
-			// 	if (((currentWallxp & 1) == 1) && ((currentWallxp & 4) == 0)) {
-			// 		cellWalls[j] = 3;
-			// 		j++;
-			// 	}
-			// }
-			// if (currenty > 0) {
-			// 	if (((currentWallym & 2) == 2) && ((currentWallym & 4) == 0)) {
-			// 		cellWalls[j] = 4;
-			// 		j++;
-			// 	}
-			// }
-			// if (j > 1) {
-			// 	lastUnExploredX = currentx;
-			// 	lastUnExploredY = currenty;
-			// } else 
 			if (j == 0) {
-				
-				
-				walls[currentx, currenty] = (byte)(walls[currentx, currenty] | 8);
+				bool a = true;
+				for (int i = 0; i < 4; i++) {
+					
+					currentDir = directions[i];
+					currentCellAround = cellsAround[i];
 
-				if (currentx > 1) {
-					ref byte currentWallxm = ref walls[currentx - 1, currenty];
-					if (((currentWall & 1) == 0) && ((currentWallxm & 8) == 0)) {
-						currentx--;
-						continue;
+					currentWall = walls[currentx + currentDir.X, currenty + currentDir.Y];
+					currentCell = walls[currentx + currentCellAround.X, currenty + currentCellAround.Y];
+					walls[currentx, currenty] |= 8;
+					
+					if(((currentCell & ((byte)Wall.Visited | (byte)Wall.Explored)) == 4) && ((currentWall & (byte)((i % 2) + 1)) > 0)) {
+						currentx += currentCellAround.X;
+						currenty += currentCellAround.Y;
+
+						a = false;
+						break;
 					}
 				}
-				if (currenty < sizey - 1) {
-					ref byte currentWallyp = ref walls[currentx, currenty + 1];
-					if (((currentWall & 2) == 0) && ((currentWallyp & 8) == 0)) {
-						currenty++;
-						continue;
+				if (a) {
+					for (int i = 0; i < 4; i++) {
+						currentDir = directions[i];
+						currentCellAround = cellsAround[i];
+
+						currentWall = walls[currentx + currentDir.X, currenty + currentDir.Y];
+						currentCell = walls[currentx + currentCellAround.X, currenty + currentCellAround.Y];
+						GD.Print($"Wall: {currentWall}\nCell: {currentCell}");
 					}
-				}
-				if (currentx < sizex - 1) {
-					ref byte currentWallxp = ref walls[currentx + 1, currenty];
-					if (((currentWallxp & 1) == 0) && ((currentWallxp & 8) == 0)) {
-						currentx++;
-						continue;
+					string row = "";
+					string newNum = "";
+					for (int i = 0; i < sizex + 3; i++) {
+						row = "";
+						for (int k = 0; k < sizey + 3; k++) {
+							newNum = " " + +walls[i, k];
+							row += newNum.Length == 2 ? " " + newNum : newNum;
+						}
+						GD.Print(row + "\n");
 					}
+					GD.Print("\n");
+					GD.Print("aaaaaa");
+					break;
 				}
-				if (currenty > 1) {
-					ref byte currentWallym = ref walls[currentx, currenty - 1];
-					if (((currentWallym & 2) == 0) && ((currentWallym & 8) == 0)) {
-						currenty--;
-						continue;
-					}
-				}
+				if (currentx == startx && currenty == starty) {GD.Print("reached start"); break;}
 			} else {
-				
-				int wall = cellWalls[rnd.Next(0, j)];
-			
-				currentx2 = currentx;
-				currenty2 = currenty;
+				randDir = rnd.Next(0, j);
+				randWall = cellWalls[randDir];
+				currentDir = directions[randWall];
+				currentCellAround = cellsAround[randWall];
 
-				switch (wall)
-				{
-					case 2: currentx2++; wall -= 2; break;
-					case 3: currenty2--; wall -= 2; break;
-				}
+				walls[currentx + currentDir.X, currenty + currentDir.Y] |= (byte)((randWall % 2) + 1);
 
-				walls[currentx2, currenty2] |= (byte)wall;
-				switch (wall)
-				{
-					case 0: currentx--; break;
-					case 1: currenty++; break;
-					case 2: currentx++; break;
-					case 3: currenty--; break;
-				}
+				currentx += currentCellAround.X;
+				currenty += currentCellAround.Y;
+
 				
 			}
-			canExit = true;
-			
 		}
 		return walls;
-
 	}
 }
