@@ -1,5 +1,18 @@
 using Godot;
 using System;
+using System.Collections.Generic;
+using System.Runtime;
+using System.Threading.Tasks;
+
+public readonly struct coords {
+	public readonly int X;
+	public readonly int Y;
+
+	public coords (int x, int y){
+		X = x;
+		Y = y;
+	}
+}
 
 public partial class MazeAlgoritm : Node3D
 {
@@ -8,11 +21,21 @@ public partial class MazeAlgoritm : Node3D
 	const int startx = 8;
 	const int starty = 8;
 	enum Wall: byte {Up = 1, Left = 2, Visited = 4, Explored = 8}
-	Node3D meshes = null;
+	Node3D meshesNode = null;
+	IDictionary<coords, coords> customMazeBehavior = new Dictionary<coords, coords>();
 	public override void _Ready()
 	{
 		GD.Print("Maze is cookin...");
-		meshes = GetParent<Node3D>().GetNode<Node3D>("MazeWalls");
+		meshesNode = GetParent().GetNode<Node3D>("MazeWalls");
+		genMaze();
+		// byte[,] walls = genMazeWalls();
+		// AssyncLoadMaze(walls);
+		// await Task.Run(() => genMaze());
+		GD.Print("Maze is cooked");
+		// solveMaze(walls, new coords(1, 1));
+	}
+
+	public void genMaze(int seed = -1, Node3D meshes = null) {
 		byte[,] walls = genMazeWalls();
 		AssyncLoadMaze(walls);
 	}
@@ -21,7 +44,8 @@ public partial class MazeAlgoritm : Node3D
 	public override void _Process(double delta)
 	{
 	}
-	public void AssyncLoadMaze(byte[,] walls) {
+	public void AssyncLoadMaze(byte[,] walls, Node3D meshes = null) {
+		if (meshes == null) meshes = meshesNode;
 		for (int i = 1; i < sizex + 2; i++) {
 			for (int j = 0; j < sizey + 1; j++) {
 				if (((walls[i, j] & (byte)Wall.Up) == 0) && (j != 0)) {
@@ -49,11 +73,29 @@ public partial class MazeAlgoritm : Node3D
 				}
 			}
 		}
+		for (int i = 0; i < sizex + 1; i++) {
+			for (int j = 0; j < sizey + 1; j++) {
+					ResourceLoader.LoadThreadedRequest("res://Scines/Levels/WallCorner.tscn");
+			}
+		}
+		for (int i = 0; i < sizex + 1; i++) {
+			for (int j = 0; j < sizey + 1; j++) {
+				testScene = (PackedScene)ResourceLoader.LoadThreadedGet("res://Scines/Levels/WallCorner.tscn");
+				Node3D testMesh = (Node3D)testScene.Instantiate();
+				meshes.AddChild(testMesh);
+				testMesh.Position = new Vector3(7.0f + i * 4.0f, 0.0f, 5.0f + j * 4.0f);
+			}
+		}
 		GD.Print("Loading... labyrinth");
 	}
-	
-	public byte[,] genMazeWalls() {
-		Random rnd = new Random();
+	public byte[,] genMazeWalls(int seed = -1) {
+		Random rnd;
+		if (seed == -1) {
+			rnd = new Random();
+		} else {
+			rnd = new Random(seed);
+		}
+		
 		
 		int currentx = startx;
 		int currenty = starty;
@@ -71,13 +113,13 @@ public partial class MazeAlgoritm : Node3D
 
 		byte currentCell;
 		byte currentWall;
-		(int X, int Y) currentDir;
-		(int X, int Y) currentCellAround;
+		coords currentDir;
+		coords currentCellAround;
 		int randWall;
 
 		int[] cellWalls = new int[4];
-		(int X, int Y) [] directions = new [] { (0, 0), (0, 0), (1, 0), (0, -1) };
-		(int X, int Y) [] cellsAround = new [] { (-1, 0), (0, 1), (1, 0), (0, -1) };
+		coords[] directions = new [] { new coords(0, 0), new coords(0, 0), new coords(1, 0), new coords(0, -1) };
+		coords[] cellsAround = new [] { new coords(-1, 0), new coords(0, 1), new coords(1, 0), new coords(0, -1) };
 
 		int randDir;
 
@@ -103,6 +145,7 @@ public partial class MazeAlgoritm : Node3D
 			}
 			if (j == 0) {
 				bool a = true;
+				walls[currentx, currenty] |= 8;
 				for (int i = 0; i < 4; i++) {
 					
 					currentDir = directions[i];
@@ -110,7 +153,7 @@ public partial class MazeAlgoritm : Node3D
 
 					currentWall = walls[currentx + currentDir.X, currenty + currentDir.Y];
 					currentCell = walls[currentx + currentCellAround.X, currenty + currentCellAround.Y];
-					walls[currentx, currenty] |= 8;
+					
 					
 					if(((currentCell & ((byte)Wall.Visited | (byte)Wall.Explored)) == 4) && ((currentWall & (byte)((i % 2) + 1)) > 0)) {
 						currentx += currentCellAround.X;
@@ -159,5 +202,85 @@ public partial class MazeAlgoritm : Node3D
 			}
 		}
 		return walls;
+	}
+	// public (int X1, int Y1, byte Wall1, int X2, int Y2, byte Wall2) 
+	// public List<coords> solveMaze(byte[,] walls, int X, int Y) {
+	// 	List<coords> path = new List<coords>();
+
+
+
+	// 	return path;
+	// }
+
+	public List<coords> solveMaze(byte[,] walls, coords end) {
+		List<coords> path = new List<coords> { new coords(startx, starty) };
+		List<coords> pointsOfMulPaths = new List<coords> { new coords(startx, starty) };
+		byte[,] walls1 = (byte[,])walls.Clone();
+
+		int currentx = startx;
+		int currenty = starty;
+
+		byte currentCell;
+		byte currentWall;
+		coords currentDir;
+		coords currentCellAround;
+
+		int[] cellWalls = new int[4];
+		coords[] directions = new [] { new coords(0, 0), new coords(0, 0), new coords(1, 0), new coords(0, -1) };
+		coords[] cellsAround = new [] { new coords(-1, 0), new coords(0, 1), new coords(1, 0), new coords(0, -1) };
+
+		List<List<int>> allPosibleDirections = new List<List<int>>();
+		List<int> newPaths;
+
+
+		int paths;
+		int currentPath;
+		for (int gen = 0; gen < 100; gen++) {
+		// while (true) {
+			paths = 0;
+			newPaths = new List<int>();
+			for (int i = 0; i < 4; i++) {
+				currentDir = directions[i];
+				currentCellAround = cellsAround[i];
+
+				currentWall = walls[currentx + currentDir.X, currenty + currentDir.Y];
+				// currentCell = walls[currentx + currentCellAround.X, currenty + currentCellAround.Y];
+				if ((currentWall & ((i % 2) + 1)) > 0) {
+					paths++;
+					newPaths.Add(i);
+				}
+			}
+			if (paths == 1 && !(currentx == startx && currenty == starty)) {
+				currentx = pointsOfMulPaths[pointsOfMulPaths.Count - 1].X;
+				currenty = pointsOfMulPaths[pointsOfMulPaths.Count - 1].Y;
+			}
+			if (paths > 1) {
+				allPosibleDirections.Add(newPaths);
+				int lastList = allPosibleDirections.Count - 1;
+				int dir = allPosibleDirections[lastList][allPosibleDirections[lastList].Count - 1];
+				currentCellAround = directions[dir];
+				
+				currentx += currentCellAround.X;
+				currenty += currentCellAround.Y;
+
+				allPosibleDirections[lastList].Remove(dir);
+
+			}
+			if (currentx == end.X && currenty == end.Y) {
+				break;
+			}
+			if (paths > 2) {
+				pointsOfMulPaths.Add(new coords(currentx, currenty));
+			}
+			
+			
+			
+		}
+		foreach (coords coords1 in pointsOfMulPaths) {
+			GD.Print($"X: {coords1.X}; Y: {coords1.Y}");
+		}
+		GD.Print();
+		return pointsOfMulPaths;
+
 	}
 }

@@ -12,12 +12,19 @@ public partial class player : CharacterBody3D
 	Camera3D camera = null;
 	Node3D cameraRotX = null;
 	RayCast3D cameraColisionDetector = null;
+	CanvasLayer ui = null;
 	
 	public override void _Ready() {
 		Input.MouseMode = Input.MouseModeEnum.Captured;
+
 		camera = GetNode<Camera3D>("CameraRig/RotY/Camera");
 		cameraRotX = GetNode<Node3D>("CameraRig/RotY");
 		cameraColisionDetector = GetNode<RayCast3D>("CameraRig/RotY/CameraColisionDetector");
+
+		cameraColisionDetector.TargetPosition = new Vector3(CameraOfset, CameraHight, MaxCameraDistance);
+		cameraColisionDetector.HitBackFaces = false;
+
+		ui = GetParent().GetNode<CanvasLayer>("UI");
 	}
 	
 	public const float Speed = 5.0f;
@@ -28,7 +35,8 @@ public partial class player : CharacterBody3D
 
 	// Maximum Camera distance from player camera is (x = 0; y = 2; z = 4) distance is aproximatly sqrt(0^2 + 2^2 + 4^2) ~ 4.472135955
 	[Export] public float MaxCameraDistance = 1.8f; 
-	[Export] public float CameraOfset = 1.0f; 
+	[Export] public float CameraHight = 0.0f; 
+	[Export] public float CameraOfset = 1.0f;
 
 	// Get the gravity from the project settings to be synced with RigidBody nodes.
 	public float gravity = ProjectSettings.GetSetting("physics/3d/default_gravity").AsSingle();
@@ -84,7 +92,7 @@ public partial class player : CharacterBody3D
 		}
 		Velocity = velocity;
 		MoveAndSlide();
-		HandleCameraCollision();
+		HandleCameraCollision(new Vector2(0.0f, 0.0f));
 	}
 	
 	// move camera
@@ -95,46 +103,58 @@ public partial class player : CharacterBody3D
 
 			// GD.Print($"rotation: {cameraRotX.GlobalRotationDegrees.X}\nmotion: {motion.Y}");
 			// GD.Print($"full rotation: {cameraRotX.GlobalRotationDegrees.X + motion.Y}");
-			RotateY(motion.X);
+			// RotateY(motion.X);
 			// float Precision = 1.0f;
-			if (cameraRotX.GlobalRotationDegrees.X + motion.Y <= -89.997f) {
+			// Vector3 vector3 = camera.Position;
+			// camera.Position = new Vector3(CameraOfset, CameraHight, MaxCameraDistance);
+			HandleCameraCollision(motion);
+
+			GD.Print($"X: {cameraRotX.RotationDegrees.X}");
+			GD.Print($"X: {cameraRotX.RotationDegrees.Y}");
+			GD.Print($"X: {cameraRotX.RotationDegrees.Z}");
+			GD.Print($"X: {cameraRotX.RotationDegrees.X + motion.Y}");
+			GD.Print($"X: {cameraRotX.RotationDegrees.Y + motion.Y}");
+			GD.Print($"X: {cameraRotX.RotationDegrees.Z + motion.Y}");
+			cameraRotX.RotateX(motion.Y);
+			if (cameraRotX.RotationDegrees.X <= -89.997f) {
 				cameraRotX.RotationDegrees = new Vector3(-90.0f, 0.0f, 0.0f);
 			
-			} else if (cameraRotX.GlobalRotationDegrees.X + motion.Y >= 89.997f) {
+			} else if (cameraRotX.RotationDegrees.X >= 89.997f) {
 				cameraRotX.RotationDegrees = new Vector3(90.0f, 0.0f, 0.0f);
 
 			} else {
-				cameraRotX.RotateX(motion.Y);
+				// cameraRotX.RotateX(motion.Y);
+				// GD.Print($"Huh: {cameraRotX.Rotation.X}");
+				camera.LookAt(ToGlobal(new Vector3(camera.Position.X, camera.Position.Y, 0.0f)), new Vector3(0.0f, 1.0f, 0.0f));
 			}
+			// camera.Position = vector3;
 			
-			GD.Print('\n');
-			HandleCameraCollision();
 			
 		}
 		if (e.IsActionPressed("ui_cancel")) {
 			Input.MouseMode = Input.MouseMode == Input.MouseModeEnum.Captured ? Input.MouseModeEnum.Visible : Input.MouseModeEnum.Captured;
+			ui.Visible = Input.MouseMode == Input.MouseModeEnum.Visible;
 		}
 	}
 
-	void HandleCameraCollision(){
+	void HandleCameraCollision(Vector2 motion){
+		// cameraColisionDetector.TargetPosition = camera.Position;
+		RotateY(motion.X);
+		cameraColisionDetector.TargetPosition = new Vector3(CameraOfset, CameraHight, MaxCameraDistance);
 		cameraColisionDetector.ForceRaycastUpdate();
-			Vector3 posOfCameraColision;
-			if (cameraColisionDetector.IsColliding()) {
-				posOfCameraColision = this.ToLocal(cameraColisionDetector.GetCollisionPoint());
-
-				if (MaxCameraDistance > posOfCameraColision.Length()) {
-					// Vector2 Current = new Vector2(posOfCameraColision.Y, posOfCameraColision.Z);
-					// float angle = (float)Math.Acos(Current.Dot(new Vector2(-posOfCameraColision.Y, -posOfCameraColision.Z)));
-
-					camera.Position = posOfCameraColision;
-
-				} else {
-					camera.Position = new Vector3(CameraOfset, 0.0f, MaxCameraDistance);
-				}
-				
-			} else {
-				camera.Position = new Vector3(CameraOfset, 0.0f, MaxCameraDistance);
-			}
+		Vector3 posOfCameraColision;
+		if (cameraColisionDetector.IsColliding()) {
+			posOfCameraColision = ToLocal(cameraColisionDetector.GetCollisionPoint());
+			float len = new Vector3(CameraOfset, CameraHight, MaxCameraDistance).Length() / posOfCameraColision.Length() + 0.01f;
+			camera.Position = new Vector3(CameraOfset, CameraHight, MaxCameraDistance) / len;
+			GD.Print($"Col: {cameraColisionDetector.GetCollisionPoint()}");
+		} else {
+			camera.Position = new Vector3(CameraOfset, CameraHight, MaxCameraDistance);
+		}
+		// float a = camera.Rotation.Y;
+		
+		// camera.Rotation = new Vector3(camera.Rotation.X, a, camera.Rotation.Z);
+			
 	}
 	
 	

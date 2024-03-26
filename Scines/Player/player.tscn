@@ -17,25 +17,30 @@ shader_parameter/inputTexture = ExtResource("3_q66f5")
 rotation_edit_mode = 1
 axis_lock_angular_y = true
 script = ExtResource("1_m8svn")
-MaxCameraDistance = 23.205
+MaxCameraDistance = 3.635
 CameraOfset = 0.97
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("CapsuleShape3D_jc4pe")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.98, 0, 0, 0, 0.98, 0, 0, 0, 0.98, 0, -0.01, 0)
 mesh = SubResource("CapsuleMesh_q81o0")
 surface_material_override/0 = SubResource("ShaderMaterial_hxm4g")
 
 [node name="CameraRig" type="Node3D" parent="."]
 
 [node name="RotY" type="Node3D" parent="CameraRig"]
+rotation_edit_mode = 1
 
 [node name="Camera" type="Camera3D" parent="CameraRig/RotY"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.834867, 0, 1.8)
+rotation_edit_mode = 1
 doppler_tracking = 2
 fov = 90.0
 near = 0.001
 
 [node name="CameraColisionDetector" type="RayCast3D" parent="CameraRig/RotY"]
 target_position = Vector3(0, 0, 4)
+hit_back_faces = false
+debug_shape_thickness = 5

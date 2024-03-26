@@ -1,0 +1,39 @@
+[gd_scene load_steps=7 format=3 uid="uid://cedh8lh0r2srk"]
+
+[ext_resource type="Shader" path="res://Shaders/Enviorment/Maze_floor/new_shader.gdshader" id="1_ilswy"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_5af8c"]
+frequency = 0.038
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_fypsi"]
+generate_mipmaps = false
+seamless = true
+noise = SubResource("FastNoiseLite_5af8c")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_pksph"]
+render_priority = 0
+shader = ExtResource("1_ilswy")
+shader_parameter/noiseAmount = 0.124
+shader_parameter/base_color = Color(0.537255, 0.482353, 0.447059, 1)
+shader_parameter/xTiling = null
+shader_parameter/yTiling = null
+shader_parameter/scale = 1.185
+shader_parameter/lineSize = 0.02
+shader_parameter/noise = SubResource("NoiseTexture2D_fypsi")
+
+[sub_resource type="BoxMesh" id="BoxMesh_8cmmu"]
+material = SubResource("ShaderMaterial_pksph")
+size = Vector3(1, 5, 1)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_4moug"]
+data = PackedVector3Array(-0.5, 2.5, 0.5, 0.5, 2.5, 0.5, -0.5, -2.5, 0.5, 0.5, 2.5, 0.5, 0.5, -2.5, 0.5, -0.5, -2.5, 0.5, 0.5, 2.5, -0.5, -0.5, 2.5, -0.5, 0.5, -2.5, -0.5, -0.5, 2.5, -0.5, -0.5, -2.5, -0.5, 0.5, -2.5, -0.5, 0.5, 2.5, 0.5, 0.5, 2.5, -0.5, 0.5, -2.5, 0.5, 0.5, 2.5, -0.5, 0.5, -2.5, -0.5, 0.5, -2.5, 0.5, -0.5, 2.5, -0.5, -0.5, 2.5, 0.5, -0.5, -2.5, -0.5, -0.5, 2.5, 0.5, -0.5, -2.5, 0.5, -0.5, -2.5, -0.5, 0.5, 2.5, 0.5, -0.5, 2.5, 0.5, 0.5, 2.5, -0.5, -0.5, 2.5, 0.5, -0.5, 2.5, -0.5, 0.5, 2.5, -0.5, -0.5, -2.5, 0.5, 0.5, -2.5, 0.5, -0.5, -2.5, -0.5, 0.5, -2.5, 0.5, 0.5, -2.5, -0.5, -0.5, -2.5, -0.5)
+
+[node name="Node3D" type="Node3D"]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_8cmmu")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="MeshInstance3D"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="MeshInstance3D/StaticBody3D"]
+shape = SubResource("ConcavePolygonShape3D_4moug")
