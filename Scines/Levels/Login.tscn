@@ -1,0 +1,90 @@
+[gd_scene load_steps=2 format=3 uid="uid://b88sp4ogtrhd6"]
+
+[ext_resource type="Script" path="res://Scripts/Maze/Login.cs" id="1_pdy4o"]
+
+[node name="CanvasLayer" type="CanvasLayer"]
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_pdy4o")
+
+[node name="Panel" type="Panel" parent="Control"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 28.8
+anchor_bottom = 16.225
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Control/Panel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.238
+anchor_top = 0.265
+anchor_right = 0.741
+anchor_bottom = 0.761
+offset_left = -0.175995
+offset_top = 0.0149841
+offset_right = 0.36792
+offset_bottom = 0.110962
+theme_override_constants/separation = 18
+
+[node name="Username" type="VBoxContainer" parent="Control/Panel/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Control/Panel/VBoxContainer/Username"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Username"
+
+[node name="LineEdit" type="LineEdit" parent="Control/Panel/VBoxContainer/Username"]
+layout_mode = 2
+
+[node name="Password" type="VBoxContainer" parent="Control/Panel/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Control/Panel/VBoxContainer/Password"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Password"
+
+[node name="LineEdit" type="LineEdit" parent="Control/Panel/VBoxContainer/Password"]
+layout_mode = 2
+
+[node name="IsValid" type="VBoxContainer" parent="Control/Panel/VBoxContainer"]
+visible = false
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Control/Panel/VBoxContainer/IsValid"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0, 0, 1)
+horizontal_alignment = 1
+
+[node name="LogIn" type="HBoxContainer" parent="Control/Panel/VBoxContainer"]
+layout_direction = 3
+layout_mode = 2
+
+[node name="Button" type="Button" parent="Control/Panel/VBoxContainer/LogIn"]
+custom_minimum_size = Vector2(130, 0)
+layout_mode = 2
+text = "Log in"
+
+[node name="SignIn" type="HBoxContainer" parent="Control/Panel/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 259
+alignment = 2
+
+[node name="Label" type="Label" parent="Control/Panel/VBoxContainer/SignIn"]
+layout_mode = 2
+text = "Do not have an account?"
+
+[node name="Button" type="Button" parent="Control/Panel/VBoxContainer/SignIn"]
+custom_minimum_size = Vector2(130, 0)
+layout_mode = 2
+text = "Sign in"
+
+[connection signal="button_up" from="Control/Panel/VBoxContainer/LogIn/Button" to="Control" method="_log_in"]
+[connection signal="button_down" from="Control/Panel/VBoxContainer/SignIn/Button" to="Control" method="_sign_in"]

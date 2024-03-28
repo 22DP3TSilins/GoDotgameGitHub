@@ -21,10 +21,13 @@ public partial class player : CharacterBody3D
 		cameraRotX = GetNode<Node3D>("CameraRig/RotY");
 		cameraColisionDetector = GetNode<RayCast3D>("CameraRig/RotY/CameraColisionDetector");
 
+		ui = GetParent().GetNode<CanvasLayer>("UI");
+		MaxCameraDistance = (float)ui.GetNode<Slider>("Control/Panel/HBoxContainer/Camera settings/CameraSettings/Distance/Input").Value;
+		CameraOfset = (float)ui.GetNode<Slider>("Control/Panel/HBoxContainer/Camera settings/CameraSettings/Ofset/Input").Value;
+
 		cameraColisionDetector.TargetPosition = new Vector3(CameraOfset, CameraHight, MaxCameraDistance);
 		cameraColisionDetector.HitBackFaces = false;
 
-		ui = GetParent().GetNode<CanvasLayer>("UI");
 	}
 	
 	public const float Speed = 5.0f;
@@ -34,9 +37,9 @@ public partial class player : CharacterBody3D
 	float LastJump = 1.0f;
 
 	// Maximum Camera distance from player camera is (x = 0; y = 2; z = 4) distance is aproximatly sqrt(0^2 + 2^2 + 4^2) ~ 4.472135955
-	[Export] public float MaxCameraDistance = 1.8f; 
+	[Export] public float MaxCameraDistance; 
 	[Export] public float CameraHight = 0.0f; 
-	[Export] public float CameraOfset = 1.0f;
+	[Export] public float CameraOfset;
 
 	// Get the gravity from the project settings to be synced with RigidBody nodes.
 	public float gravity = ProjectSettings.GetSetting("physics/3d/default_gravity").AsSingle();
