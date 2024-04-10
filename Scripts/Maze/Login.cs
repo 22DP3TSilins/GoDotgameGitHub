@@ -93,7 +93,7 @@ public partial class Login : Control
 	LineEdit usernameNode = null;
 	LineEdit passwordNode = null;
 	Label isValidNode = null;
-	CanvasLayer scores = null;
+	ScoreBoard scores = null;
 	internal protected User user1;
 	static readonly HMACSHA512 hMACSHA512 = new(new byte[]{2, 4, 5, 26});
 	public override void _Ready()
@@ -101,7 +101,7 @@ public partial class Login : Control
 		usernameNode = GetNode<LineEdit>("Panel/VBoxContainer/Username/LineEdit");
 		passwordNode = GetNode<LineEdit>("Panel/VBoxContainer/Password/LineEdit");
 		isValidNode = GetNode<Label>("Panel/VBoxContainer/IsValid/Label");
-		scores = GetParent().GetParent().GetNode<CanvasLayer>("Scores");
+		scores = GetParent().GetParent().GetNode<ScoreBoard>("Scores");
 
 		
 		// byte[] bytesUsername = new byte[64];
@@ -162,13 +162,15 @@ public partial class Login : Control
 			if (users[usernameHashed.HexEncode()].PasswordEqual(pepperedPassword)) {
 				GetParent<CanvasLayer>().Hide();
 				scores.Show();
+				scores.SetCurrentUser(usernameHashed.HexEncode(), false);
 				GD.Print("Login End success:");
+
 				return;
 			}
 		}
 
-		isValidNode.Show();
 		isValidNode.Text = "Username and/or password is incorrect!";
+		isValidNode.Show();
 		GD.Print("Login End fail:");
 		
 	}
@@ -183,14 +185,16 @@ public partial class Login : Control
 		byte[] usernameHashed = hMACSHA512.ComputeHash(bytesUsername);
 
 		if (users.ContainsKey(usernameHashed.HexEncode())) {
-			isValidNode.Show();
 			isValidNode.Text = "Username already exists!";
+			isValidNode.Show();
 			GD.Print("fail");
 			
 		} else {
 			users.Add(usernameHashed.HexEncode(), new User(usernameNode.Text, passwordNode.Text));
 			GetParent<CanvasLayer>().Hide();
 			scores.Show();
+			// scores.AddUserScore(usernameHashed.HexEncode());
+			scores.SetCurrentUser(usernameHashed.HexEncode(), true);
 			GD.Print("success");
 		}
 	}

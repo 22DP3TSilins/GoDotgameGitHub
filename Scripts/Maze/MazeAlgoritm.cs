@@ -24,13 +24,13 @@ public partial class MazeAlgoritm : Node3D
 	Node3D meshes = null;
 	IDictionary<coords, coords> customMazeBehavior = new Dictionary<coords, coords>();
 	List<Node3D> wallMeshes = new List<Node3D>();
-	MeshInstance3D finish = null;
+	Finish finish = null;
 	public override void _Ready()
 	{
 		
 		GD.Print("Maze is cookin...");
 		meshes = GetParent().GetNode<Node3D>("MazeWalls");
-		finish = meshes.GetNode<MeshInstance3D>("Finish");
+		finish = meshes.GetNode<Finish>("Finish");
 		genMaze(8, false);
 		// byte[,] walls = genMazeWalls();
 		// AssyncLoadMaze(walls);

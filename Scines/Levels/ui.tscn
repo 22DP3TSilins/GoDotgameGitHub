@@ -21,8 +21,8 @@ layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_right = -1070.0
-offset_bottom = -560.0
+offset_right = 2.0
+offset_bottom = 2.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_lw2q3")
@@ -30,131 +30,146 @@ script = ExtResource("1_lw2q3")
 [node name="Panel" type="Panel" parent="Control"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 7.012
-anchor_top = 3.693
-anchor_right = 23.725
-anchor_bottom = 12.2
-offset_left = -274.984
-offset_top = -149.984
-offset_right = -1095.45
-offset_bottom = -598.6
+anchor_left = 0.5
+anchor_top = 0.489
+anchor_right = 0.502
+anchor_bottom = 0.489
+offset_left = -251.0
+offset_top = -141.85
+offset_right = 252.692
+offset_bottom = 142.15
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Control/Panel"]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+[node name="Control" type="Control" parent="Control/Panel"]
+layout_mode = 1
+anchor_left = -0.64
+anchor_top = -0.613
+anchor_right = 1.613
+anchor_bottom = 1.648
+offset_left = 331.84
+offset_top = 176.092
+offset_right = -312.178
+offset_bottom = -190.032
 
-[node name="Maze generation" type="PanelContainer" parent="Control/Panel/HBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Control/Panel/Control"]
+layout_mode = 2
+anchor_top = 0.061
+anchor_right = 1.103
+anchor_bottom = 1.036
+offset_top = 0.100004
+offset_right = -8.76801
+offset_bottom = -0.00799561
+
+[node name="Maze generation" type="PanelContainer" parent="Control/Panel/Control/HBoxContainer"]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_8qv7v")
 
-[node name="MazeGeneration" type="VBoxContainer" parent="Control/Panel/HBoxContainer/Maze generation"]
+[node name="MazeGeneration" type="VBoxContainer" parent="Control/Panel/Control/HBoxContainer/Maze generation"]
 layout_mode = 2
 theme_override_constants/separation = 17
 
-[node name="Label" type="Label" parent="Control/Panel/HBoxContainer/Maze generation/MazeGeneration"]
+[node name="Label" type="Label" parent="Control/Panel/Control/HBoxContainer/Maze generation/MazeGeneration"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
 text = "Maze generation"
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Control/Panel/HBoxContainer/Maze generation/MazeGeneration"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Control/Panel/Control/HBoxContainer/Maze generation/MazeGeneration"]
 layout_mode = 2
 
-[node name="Button" type="Button" parent="Control/Panel/HBoxContainer/Maze generation/MazeGeneration/VBoxContainer"]
+[node name="Button" type="Button" parent="Control/Panel/Control/HBoxContainer/Maze generation/MazeGeneration/VBoxContainer"]
 layout_mode = 2
 text = "Generate new maze"
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Control/Panel/HBoxContainer/Maze generation/MazeGeneration/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Control/Panel/Control/HBoxContainer/Maze generation/MazeGeneration/VBoxContainer"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="Control/Panel/HBoxContainer/Maze generation/MazeGeneration/VBoxContainer/HBoxContainer"]
+[node name="Label" type="Label" parent="Control/Panel/Control/HBoxContainer/Maze generation/MazeGeneration/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 text = "Generate random"
 
-[node name="CheckButton" type="CheckButton" parent="Control/Panel/HBoxContainer/Maze generation/MazeGeneration/VBoxContainer/HBoxContainer"]
+[node name="CheckButton" type="CheckButton" parent="Control/Panel/Control/HBoxContainer/Maze generation/MazeGeneration/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 
-[node name="Difficulty" type="VBoxContainer" parent="Control/Panel/HBoxContainer/Maze generation/MazeGeneration"]
+[node name="Difficulty" type="VBoxContainer" parent="Control/Panel/Control/HBoxContainer/Maze generation/MazeGeneration"]
 layout_mode = 2
 
-[node name="Text" type="Label" parent="Control/Panel/HBoxContainer/Maze generation/MazeGeneration/Difficulty"]
+[node name="Text" type="Label" parent="Control/Panel/Control/HBoxContainer/Maze generation/MazeGeneration/Difficulty"]
 layout_mode = 2
 text = "Difficulty: Medium"
 
-[node name="Input" type="HSlider" parent="Control/Panel/HBoxContainer/Maze generation/MazeGeneration/Difficulty"]
+[node name="Input" type="HSlider" parent="Control/Panel/Control/HBoxContainer/Maze generation/MazeGeneration/Difficulty"]
 layout_mode = 2
 min_value = 5.0
 max_value = 15.0
 value = 5.0
 
-[node name="Seed" type="VBoxContainer" parent="Control/Panel/HBoxContainer/Maze generation/MazeGeneration"]
+[node name="Seed" type="VBoxContainer" parent="Control/Panel/Control/HBoxContainer/Maze generation/MazeGeneration"]
 layout_mode = 2
 
-[node name="Text" type="Label" parent="Control/Panel/HBoxContainer/Maze generation/MazeGeneration/Seed"]
+[node name="Text" type="Label" parent="Control/Panel/Control/HBoxContainer/Maze generation/MazeGeneration/Seed"]
 layout_mode = 2
 text = "Seed of maze"
 
-[node name="Input" type="SpinBox" parent="Control/Panel/HBoxContainer/Maze generation/MazeGeneration/Seed"]
+[node name="Input" type="SpinBox" parent="Control/Panel/Control/HBoxContainer/Maze generation/MazeGeneration/Seed"]
 layout_mode = 2
 max_value = 2.14748e+09
 
-[node name="Camera settings" type="PanelContainer" parent="Control/Panel/HBoxContainer"]
+[node name="Camera settings" type="PanelContainer" parent="Control/Panel/Control/HBoxContainer"]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_w5806")
 
-[node name="CameraSettings" type="VBoxContainer" parent="Control/Panel/HBoxContainer/Camera settings"]
+[node name="CameraSettings" type="VBoxContainer" parent="Control/Panel/Control/HBoxContainer/Camera settings"]
 layout_mode = 2
 theme = SubResource("Theme_wkswr")
 theme_override_constants/separation = 17
 
-[node name="Label" type="Label" parent="Control/Panel/HBoxContainer/Camera settings/CameraSettings"]
+[node name="Label" type="Label" parent="Control/Panel/Control/HBoxContainer/Camera settings/CameraSettings"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
 text = "Camera settings"
 
-[node name="FOV" type="VBoxContainer" parent="Control/Panel/HBoxContainer/Camera settings/CameraSettings"]
+[node name="FOV" type="VBoxContainer" parent="Control/Panel/Control/HBoxContainer/Camera settings/CameraSettings"]
 layout_mode = 2
 
-[node name="Text" type="Label" parent="Control/Panel/HBoxContainer/Camera settings/CameraSettings/FOV"]
+[node name="Text" type="Label" parent="Control/Panel/Control/HBoxContainer/Camera settings/CameraSettings/FOV"]
 layout_mode = 2
 text = "Field of View (FOV)"
 
-[node name="Input" type="HSlider" parent="Control/Panel/HBoxContainer/Camera settings/CameraSettings/FOV"]
+[node name="Input" type="HSlider" parent="Control/Panel/Control/HBoxContainer/Camera settings/CameraSettings/FOV"]
 layout_mode = 2
 min_value = 80.0
 max_value = 120.0
 step = 0.01
 value = 90.0
 
-[node name="Ofset" type="VBoxContainer" parent="Control/Panel/HBoxContainer/Camera settings/CameraSettings"]
+[node name="Ofset" type="VBoxContainer" parent="Control/Panel/Control/HBoxContainer/Camera settings/CameraSettings"]
 layout_mode = 2
 
-[node name="Text" type="Label" parent="Control/Panel/HBoxContainer/Camera settings/CameraSettings/Ofset"]
+[node name="Text" type="Label" parent="Control/Panel/Control/HBoxContainer/Camera settings/CameraSettings/Ofset"]
 layout_mode = 2
 text = "Camera ofset"
 
-[node name="Input" type="HSlider" parent="Control/Panel/HBoxContainer/Camera settings/CameraSettings/Ofset"]
+[node name="Input" type="HSlider" parent="Control/Panel/Control/HBoxContainer/Camera settings/CameraSettings/Ofset"]
 layout_mode = 2
 max_value = 1.0
 step = 0.01
 value = 0.3
 
-[node name="Distance" type="VBoxContainer" parent="Control/Panel/HBoxContainer/Camera settings/CameraSettings"]
+[node name="Distance" type="VBoxContainer" parent="Control/Panel/Control/HBoxContainer/Camera settings/CameraSettings"]
 layout_mode = 2
 
-[node name="Text" type="Label" parent="Control/Panel/HBoxContainer/Camera settings/CameraSettings/Distance"]
+[node name="Text" type="Label" parent="Control/Panel/Control/HBoxContainer/Camera settings/CameraSettings/Distance"]
 layout_mode = 2
 text = "Distance"
 
-[node name="Input" type="HSlider" parent="Control/Panel/HBoxContainer/Camera settings/CameraSettings/Distance"]
+[node name="Input" type="HSlider" parent="Control/Panel/Control/HBoxContainer/Camera settings/CameraSettings/Distance"]
 layout_mode = 2
 min_value = 1.0
 max_value = 3.0
 step = 0.01
 value = 2.0
 
-[connection signal="button_up" from="Control/Panel/HBoxContainer/Maze generation/MazeGeneration/VBoxContainer/Button" to="Control" method="_gen_maze"]
-[connection signal="value_changed" from="Control/Panel/HBoxContainer/Maze generation/MazeGeneration/Difficulty/Input" to="Control" method="_difficulty_changed"]
-[connection signal="value_changed" from="Control/Panel/HBoxContainer/Camera settings/CameraSettings/FOV/Input" to="Control" method="_fov_changed"]
-[connection signal="value_changed" from="Control/Panel/HBoxContainer/Camera settings/CameraSettings/Ofset/Input" to="Control" method="_ofset_changed"]
-[connection signal="value_changed" from="Control/Panel/HBoxContainer/Camera settings/CameraSettings/Distance/Input" to="Control" method="_camera_dist_changed"]
+[connection signal="button_up" from="Control/Panel/Control/HBoxContainer/Maze generation/MazeGeneration/VBoxContainer/Button" to="Control" method="_gen_maze"]
+[connection signal="value_changed" from="Control/Panel/Control/HBoxContainer/Maze generation/MazeGeneration/Difficulty/Input" to="Control" method="_difficulty_changed"]
+[connection signal="value_changed" from="Control/Panel/Control/HBoxContainer/Camera settings/CameraSettings/FOV/Input" to="Control" method="_fov_changed"]
+[connection signal="value_changed" from="Control/Panel/Control/HBoxContainer/Camera settings/CameraSettings/Ofset/Input" to="Control" method="_ofset_changed"]
+[connection signal="value_changed" from="Control/Panel/Control/HBoxContainer/Camera settings/CameraSettings/Distance/Input" to="Control" method="_camera_dist_changed"]

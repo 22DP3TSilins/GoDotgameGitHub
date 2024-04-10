@@ -1,8 +1,10 @@
-[gd_scene load_steps=2 format=3 uid="uid://0ywhovfe7yw4"]
+[gd_scene load_steps=3 format=3 uid="uid://0ywhovfe7yw4"]
 
 [ext_resource type="PackedScene" uid="uid://v1wr174pvgv8" path="res://Scines/Levels/ScoreForPlayer.tscn" id="1_h7gmb"]
+[ext_resource type="Script" path="res://Scripts/Maze/ScoreBoard.cs" id="1_ksgkn"]
 
-[node name="CanvasLayer" type="CanvasLayer"]
+[node name="ScoreBoard" type="CanvasLayer"]
+script = ExtResource("1_ksgkn")
 
 [node name="Control" type="Control" parent="."]
 layout_mode = 3

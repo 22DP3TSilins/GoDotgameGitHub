@@ -13,6 +13,9 @@ public partial class player : CharacterBody3D
 	Node3D cameraRotX = null;
 	RayCast3D cameraColisionDetector = null;
 	CanvasLayer ui = null;
+	ScoreBoard scoreBoard = null;
+	CanvasLayer login = null;
+
 	
 	public override void _Ready() {
 		Input.MouseMode = Input.MouseModeEnum.Captured;
@@ -21,22 +24,23 @@ public partial class player : CharacterBody3D
 		cameraRotX = GetNode<Node3D>("CameraRig/RotY");
 		cameraColisionDetector = GetNode<RayCast3D>("CameraRig/RotY/CameraColisionDetector");
 
-		ui = GetParent().GetNode<CanvasLayer>("UI");
-		MaxCameraDistance = (float)ui.GetNode<Slider>("Control/Panel/HBoxContainer/Camera settings/CameraSettings/Distance/Input").Value;
-		CameraOfset = (float)ui.GetNode<Slider>("Control/Panel/HBoxContainer/Camera settings/CameraSettings/Ofset/Input").Value;
+		ui = GetNode<CanvasLayer>("../UI");
+		scoreBoard = GetNode<ScoreBoard>("../Scores");
+		MaxCameraDistance = (float)ui.GetNode<Slider>("Control/Panel/Control/HBoxContainer/Camera settings/CameraSettings/Distance/Input").Value;
+		CameraOfset = (float)ui.GetNode<Slider>("Control/Panel/Control/HBoxContainer/Camera settings/CameraSettings/Ofset/Input").Value;
 
 		cameraColisionDetector.TargetPosition = new Vector3(CameraOfset, CameraHight, MaxCameraDistance);
 		cameraColisionDetector.HitBackFaces = false;
 
+		login = GetNode<CanvasLayer>("../Login");
 	}
 	
 	public const float Speed = 5.0f;
 	public const float JumpVelocity = 5.2f;
 	public bool FlyMode = false;
-	
 	float LastJump = 1.0f;
+	bool Started = false;
 
-	// Maximum Camera distance from player camera is (x = 0; y = 2; z = 4) distance is aproximatly sqrt(0^2 + 2^2 + 4^2) ~ 4.472135955
 	[Export] public float MaxCameraDistance; 
 	[Export] public float CameraHight = 0.0f; 
 	[Export] public float CameraOfset;
@@ -52,20 +56,24 @@ public partial class player : CharacterBody3D
 
 	public override void _PhysicsProcess(double delta)
 	{
+		if (login.Visible) {
+			
+		}
 		Vector3 velocity = Velocity;
 		float VelocityY = velocity.Y;
 		
 		Vector2 inputXZ = Input.GetVector("move_left", "move_right", "move_forward", "move_backward");
-		float inputY = Input.GetAxis("fly_up", "fly_down");
+		if (!(inputXZ == Vector2.Zero)) StartClock();
+		// float inputY = Input.GetAxis("fly_up", "fly_down");
 		Vector3 target_velocity = new Vector3();
 		Vector3 forward = camera.GlobalTransform.Basis.Z;
 		Vector3 right = camera.GlobalTransform.Basis.X;
-		Vector3 up = camera.GlobalTransform.Basis.Y;
+		// Vector3 up = camera.GlobalTransform.Basis.Y;
 		
 		target_velocity += right * inputXZ.X;
 		target_velocity += forward * inputXZ.Y;
-		target_velocity += up * inputY;
-		target_velocity.Y = FlyMode ? target_velocity.Y : 0.0f;
+		// target_velocity += up * inputY;
+		// target_velocity.Y = FlyMode ? target_velocity.Y : 0.0f;
 		
 		
 		target_velocity = target_velocity.Normalized() * Speed;
@@ -75,49 +83,41 @@ public partial class player : CharacterBody3D
 		velocity = velocity.Lerp(target_velocity, target_acceleration * (float)delta);
 		velocity.Y = VelocityY;
 		
-		if (!FlyMode) {
-			// Add the gravity.
-			if (!IsOnFloor()) velocity.Y -= gravity * (float)delta;
+		// if (!FlyMode) {
+		// Add the gravity.
+		if (!IsOnFloor()) velocity.Y -= gravity * (float)delta;
 
-			// Handle Jump.
-			if (Input.IsActionJustPressed("ui_accept") && IsOnFloor()) velocity.Y = JumpVelocity;
+		// Handle Jump.
+		if (Input.IsActionJustPressed("ui_accept") && IsOnFloor()) {
+			velocity.Y = JumpVelocity;
+			StartClock();
 		}
-		LastJump += (float)delta;
-		if (Input.IsActionJustPressed("ui_accept")) {
-			if (LastJump < 0.5f) {
-				FlyMode = !FlyMode;
-				LastJump = 1.0f;
-				velocity.Y = 0.0f;
+		// }
+		// LastJump += (float)delta;
+		// if (Input.IsActionJustPressed("ui_accept")) {
+			
+		// 	if (LastJump < 0.5f) {
+		// 		FlyMode = !FlyMode;
+		// 		LastJump = 1.0f;
+		// 		velocity.Y = 0.0f;
 
-			} else {
-				LastJump = 0.0f;
-			}
-		}
+		// 	} else {
+		// 		LastJump = 0.0f;
+		// 	}
+		// }
 		Velocity = velocity;
 		MoveAndSlide();
 		HandleCameraCollision(new Vector2(0.0f, 0.0f));
 	}
 	
-	// move camera
 	public override void _Input(InputEvent e) {
 		if (e is InputEventMouseMotion && Input.MouseMode == Input.MouseModeEnum.Captured) {
+			StartClock();
 			var m_event = e as InputEventMouseMotion;
 			Vector2 motion = -m_event.Relative * mouseSensitivity;
 
-			// GD.Print($"rotation: {cameraRotX.GlobalRotationDegrees.X}\nmotion: {motion.Y}");
-			// GD.Print($"full rotation: {cameraRotX.GlobalRotationDegrees.X + motion.Y}");
-			// RotateY(motion.X);
-			// float Precision = 1.0f;
-			// Vector3 vector3 = camera.Position;
-			// camera.Position = new Vector3(CameraOfset, CameraHight, MaxCameraDistance);
 			HandleCameraCollision(motion);
 
-			GD.Print($"X: {cameraRotX.RotationDegrees.X}");
-			GD.Print($"X: {cameraRotX.RotationDegrees.Y}");
-			GD.Print($"X: {cameraRotX.RotationDegrees.Z}");
-			GD.Print($"X: {cameraRotX.RotationDegrees.X + motion.Y}");
-			GD.Print($"X: {cameraRotX.RotationDegrees.Y + motion.Y}");
-			GD.Print($"X: {cameraRotX.RotationDegrees.Z + motion.Y}");
 			cameraRotX.RotateX(motion.Y);
 			if (cameraRotX.RotationDegrees.X <= -89.997f) {
 				cameraRotX.RotationDegrees = new Vector3(-90.0f, 0.0f, 0.0f);
@@ -126,22 +126,18 @@ public partial class player : CharacterBody3D
 				cameraRotX.RotationDegrees = new Vector3(90.0f, 0.0f, 0.0f);
 
 			} else {
-				// cameraRotX.RotateX(motion.Y);
-				// GD.Print($"Huh: {cameraRotX.Rotation.X}");
+
 				camera.LookAt(ToGlobal(new Vector3(camera.Position.X, camera.Position.Y, 0.0f)), new Vector3(0.0f, 1.0f, 0.0f));
 			}
-			// camera.Position = vector3;
-			
-			
 		}
 		if (e.IsActionPressed("ui_cancel")) {
+			StartClock();
 			Input.MouseMode = Input.MouseMode == Input.MouseModeEnum.Captured ? Input.MouseModeEnum.Visible : Input.MouseModeEnum.Captured;
 			ui.Visible = Input.MouseMode == Input.MouseModeEnum.Visible;
 		}
 	}
 
 	void HandleCameraCollision(Vector2 motion){
-		// cameraColisionDetector.TargetPosition = camera.Position;
 		RotateY(motion.X);
 		cameraColisionDetector.TargetPosition = new Vector3(CameraOfset, CameraHight, MaxCameraDistance);
 		cameraColisionDetector.ForceRaycastUpdate();
@@ -154,11 +150,10 @@ public partial class player : CharacterBody3D
 		} else {
 			camera.Position = new Vector3(CameraOfset, CameraHight, MaxCameraDistance);
 		}
-		// float a = camera.Rotation.Y;
-		
-		// camera.Rotation = new Vector3(camera.Rotation.X, a, camera.Rotation.Z);
-			
 	}
-	
-	
+
+	void StartClock() {
+		if (!Started) scoreBoard.StartClock();
+		Started = true;
+	}
 }

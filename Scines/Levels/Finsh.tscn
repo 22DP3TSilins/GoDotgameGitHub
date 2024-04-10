@@ -1,0 +1,28 @@
+[gd_scene load_steps=6 format=3 uid="uid://bbaixijvx3j01"]
+
+[ext_resource type="Script" path="res://Scripts/Maze/Finish.cs" id="1_amc2f"]
+[ext_resource type="Shader" path="res://Shaders/Enviorment/currentXYMazeGen.gdshader" id="2_a0wsw"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_eaupa"]
+render_priority = 0
+shader = ExtResource("2_a0wsw")
+
+[sub_resource type="BoxMesh" id="BoxMesh_yv7wi"]
+material = SubResource("ShaderMaterial_eaupa")
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_jv8p2"]
+data = PackedVector3Array(-0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, -0.5, -0.5, -0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, -0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, 0.5, 0.5, -0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, 0.5, 0.5, -0.5, 0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, -0.5)
+
+[node name="Node3D" type="Node3D"]
+script = ExtResource("1_amc2f")
+
+[node name="Mesh" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_yv7wi")
+
+[node name="Area3D" type="Area3D" parent="Mesh"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Mesh/Area3D"]
+shape = SubResource("ConcavePolygonShape3D_jv8p2")
+
+[connection signal="body_entered" from="Mesh/Area3D" to="." method="_on_area_3d_body_entered"]
+[connection signal="body_shape_entered" from="Mesh/Area3D" to="." method="_on_area_3d_body_shape_entered"]

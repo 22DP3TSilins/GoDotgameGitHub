@@ -10,20 +10,20 @@ public partial class ui : Control
 	player player1 = null;
 	Camera3D player1Camera = null;
 	MazeAlgoritm mazeAlgoritm = null;
-	SpinBox mazeSeed = null;
-	CheckButton genRndMaze = null;
+	public SpinBox mazeSeed = null;
+	public CheckButton genRndMaze = null;
 	Label difficultyLabel = null;
-	Slider difficultyInput = null;
+	public Slider difficultyInput = null;
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
 		player1 = GetParent().GetParent().GetNode<player>("Player");
 		player1Camera = player1.GetNode<Camera3D>("CameraRig/RotY/Camera");
-		mazeSeed = GetNode<SpinBox>("Panel/HBoxContainer/Maze generation/MazeGeneration/Seed/Input");
+		mazeSeed = GetNode<SpinBox>("Panel/Control/HBoxContainer/Maze generation/MazeGeneration/Seed/Input");
 		mazeAlgoritm = GetParent().GetParent().GetNode<MazeAlgoritm>("MazeGen");
-		genRndMaze = GetNode<CheckButton>("Panel/HBoxContainer/Maze generation/MazeGeneration/VBoxContainer/HBoxContainer/CheckButton");
-		difficultyLabel = GetNode<Label>("Panel/HBoxContainer/Maze generation/MazeGeneration/Difficulty/Text");
-		difficultyInput = GetNode<Slider>("Panel/HBoxContainer/Maze generation/MazeGeneration/Difficulty/Input");
+		genRndMaze = GetNode<CheckButton>("Panel/Control/HBoxContainer/Maze generation/MazeGeneration/VBoxContainer/HBoxContainer/CheckButton");
+		difficultyLabel = GetNode<Label>("Panel/Control/HBoxContainer/Maze generation/MazeGeneration/Difficulty/Text");
+		difficultyInput = GetNode<Slider>("Panel/Control/HBoxContainer/Maze generation/MazeGeneration/Difficulty/Input");
 	}
 	
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
