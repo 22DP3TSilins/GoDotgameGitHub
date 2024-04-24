@@ -1,8 +1,6 @@
 using Godot;
 using System;
 using System.Collections.Generic;
-using System.Runtime;
-using System.Threading.Tasks;
 
 public readonly struct coords {
 	public readonly int X;
@@ -16,21 +14,19 @@ public readonly struct coords {
 
 public partial class MazeAlgoritm : Node3D
 {
-	// const int sizex = 15;
-	// const int sizey = 15;
-	// const int startx = 8;
-	// const int starty = 8;
 	enum Wall: byte {Up = 1, Left = 2, Visited = 4, Explored = 8}
 	Node3D meshes = null;
 	IDictionary<coords, coords> customMazeBehavior = new Dictionary<coords, coords>();
 	List<Node3D> wallMeshes = new List<Node3D>();
 	Finish finish = null;
+	player Player = null;
 	public override void _Ready()
 	{
 		
 		GD.Print("Maze is cookin...");
-		meshes = GetParent().GetNode<Node3D>("MazeWalls");
+		meshes = GetNode<Node3D>("../MazeWalls");
 		finish = meshes.GetNode<Finish>("Finish");
+		Player = GetNode<player>("../Player");
 		genMaze(8, false);
 		// byte[,] walls = genMazeWalls();
 		// AssyncLoadMaze(walls);
@@ -39,7 +35,8 @@ public partial class MazeAlgoritm : Node3D
 		// solveMaze(walls, new coords(1, 1));
 	}
 
-	public void genMaze(int size, bool newMaze, int seed = -1) {
+	public void genMaze(int size, bool newMaze, int seed = -1, bool setLocation = true) {
+		if (setLocation) SetPlayerLocation(size, seed);
 		List<List<byte>> walls = genMazeWalls(size, seed);
 		AssyncLoadMaze(size, walls, newMaze);
 	}
@@ -48,6 +45,27 @@ public partial class MazeAlgoritm : Node3D
 	public override void _Process(double delta)
 	{
 	}
+	const float spacing = 4.0f;
+	public void SetPlayerLocation(int size, int seed = -1){
+		Random rnd;
+		if (seed == -1) {
+			rnd = new Random();
+		} else {
+			rnd = new Random(seed);
+		}
+		Vector3 newPlayerPos = new(spacing + 1.5f, -4.24f, spacing + 0.5f);
+
+		if (rnd.Next() < int.MaxValue / 2) {
+			newPlayerPos += new Vector3(rnd.Next(0, size - 1), 0.0f, 0.0f) * spacing;
+		} else {
+			newPlayerPos += new Vector3(0.0f, 0.0f, rnd.Next(0, size - 1)) * spacing;
+		}
+		Player.Position = newPlayerPos;
+		
+		GD.Print($"aaa {size}: " + rnd.NextDouble());
+	}
+	
+
 	public void AssyncLoadMaze(int size, List<List<byte>> walls, bool genNew) {
 		int sizex = size;
 		int sizey = size;
@@ -72,20 +90,21 @@ public partial class MazeAlgoritm : Node3D
 			}
 			wallMeshes = new List<Node3D>();
 		}
+		const float floor = -4;
 		for (int i = 1; i < sizex + 2; i++) {
 			for (int j = 0; j < sizey + 1; j++) {
 				if ((walls[i][j] & (byte)Wall.Up) == 0 && (j != 0)) {
 					testScene = (PackedScene)ResourceLoader.LoadThreadedGet("res://Scines/Levels/wallz.tscn");
 					Node3D testMesh = (Node3D)testScene.Instantiate();
 					meshes.AddChild(testMesh);
-					testMesh.Position = new Vector3(3.0f + i * 4.0f, 0.0f, 3.0f + j * 4.0f);
+					testMesh.Position = new Vector3(0.0f + i * spacing, floor, 0.0f + j * spacing);
 					wallMeshes.Add(testMesh);
 				}
 				if ((walls[i][j] & (byte)Wall.Left) == 0 && (i != sizex + 1)) {
 					testScene = (PackedScene)ResourceLoader.LoadThreadedGet("res://Scines/Levels/wallx.tscn");
 					Node3D testMesh = (Node3D)testScene.Instantiate();
 					meshes.AddChild(testMesh);
-					testMesh.Position = new Vector3(5.0f + i * 4.0f, 0.0f, 5.0f + j * 4.0f);
+					testMesh.Position = new Vector3(2.0f + i * spacing, floor, 2.0f + j * spacing);
 					wallMeshes.Add(testMesh);
 				}
 			}
@@ -101,7 +120,7 @@ public partial class MazeAlgoritm : Node3D
 				testScene = (PackedScene)ResourceLoader.LoadThreadedGet("res://Scines/Levels/WallCorner.tscn");
 				Node3D testMesh = (Node3D)testScene.Instantiate();
 				meshes.AddChild(testMesh);
-				testMesh.Position = new Vector3(7.0f + i * 4.0f, 0.0f, 5.0f + j * 4.0f);
+				testMesh.Position = new Vector3(4.0f + i * spacing, 0.0f, 2.0f + j * spacing);
 				wallMeshes.Add(testMesh);
 			}
 		}
@@ -123,7 +142,7 @@ public partial class MazeAlgoritm : Node3D
 		int currentx = startx;
 		int currenty = starty;
 
-		finish.Position = new Vector3(5.0f + startx * 4.0f, 0.0f, 3.0f + starty * 4.0f);
+		finish.Position = new Vector3(2.0f + startx * spacing, 0.0f, 0.0f + starty * spacing);
 
 		// byte[,] walls = new byte[sizex + 2, sizey + 2]; // 1 Up 2 Left 4 Visited 8 Explored compleatly 16 Up maze wall 32 Left maze wall;
 		// List<byte> a = new List<byte>()

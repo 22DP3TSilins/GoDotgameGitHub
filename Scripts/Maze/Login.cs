@@ -7,6 +7,8 @@ using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Security.Cryptography;
 using System.Text;
+using System.Dynamic;
+using System.Text.RegularExpressions;
 
 public partial class Login : Control
 {
@@ -164,6 +166,7 @@ public partial class Login : Control
 				scores.Show();
 				scores.SetCurrentUser(usernameHashed.HexEncode(), false);
 				GD.Print("Login End success:");
+				Input.MouseMode = Input.MouseModeEnum.Captured;
 
 				return;
 			}
@@ -179,6 +182,23 @@ public partial class Login : Control
 	private void _sign_in()
 	{
 		// Replace with function body.
+
+		string passwordResult = CheckPassword(passwordNode.Text);
+		string usernameResult = CheckUsername(usernameNode.Text);
+
+		if (passwordResult != null) {
+			isValidNode.Text = passwordResult;
+			isValidNode.Show();
+			GD.Print("fail password");
+			return;
+		}
+
+		if (usernameResult != null) {
+			isValidNode.Text = usernameResult;
+			isValidNode.Show();
+			GD.Print("fail username");
+			return;
+		}
 		byte[] bytesUsername = new byte[64];
 		byte[] username = Encoding.UTF8.GetBytes(usernameNode.Text);
 		Buffer.BlockCopy(username, 0, bytesUsername, 0, username.Length);
@@ -187,24 +207,67 @@ public partial class Login : Control
 		if (users.ContainsKey(usernameHashed.HexEncode())) {
 			isValidNode.Text = "Username already exists!";
 			isValidNode.Show();
-			GD.Print("fail");
-			
-		} else {
-			users.Add(usernameHashed.HexEncode(), new User(usernameNode.Text, passwordNode.Text));
-			GetParent<CanvasLayer>().Hide();
-			scores.Show();
-			// scores.AddUserScore(usernameHashed.HexEncode());
-			scores.SetCurrentUser(usernameHashed.HexEncode(), true);
-			GD.Print("success");
+			GD.Print("fail exists");
+			return;
 		}
+		
+		users.Add(usernameHashed.HexEncode(), new User(usernameNode.Text, passwordNode.Text));
+		GetParent<CanvasLayer>().Hide();
+		scores.Show();
+		// scores.AddUserScore(usernameHashed.HexEncode());
+		scores.SetCurrentUser(usernameHashed.HexEncode(), true);
+		GD.Print("success");
+		Input.MouseMode = Input.MouseModeEnum.Captured;
+	
 	}
-	public override void _Notification(int what)
-	{
+	public override void _Notification(int what) {
 		if (what == NotificationWMCloseRequest) {
 			usersSerialised = JsonSerializer.Serialize(users);
 			File.WriteAllText("Data/Users.json", usersSerialised);
 			GetTree().Quit(); // default behavior
 		}
+	}
+
+	public string GetUsernameFromHash(string usernameHashed) {
+		if (users.ContainsKey(usernameHashed)) {
+			return Encoding.UTF8.GetString(users[usernameHashed].Username);
+		}
+		return null;
+	}
+
+	static string CheckPassword(string password) {
+		IDictionary<string, string> tests = new Dictionary<string, string>(){
+			{@"[[\]~`!@#$%^&*(){}=\-+\\*\.,<>;:'" + '"' + "|/?]", "Password must have special characters!"},
+			{@"[0-9]", "Password must have numbers!"},
+			{@"[A-Za-z_]", "Password must have letters!"},
+			{@"^(\w|[$[[\]~`!@#$%^&*(){}=\-+\\*\.,<>;:'" + '"' + "|/?])+$", "Password must not have unreconised symbols!"}
+		};
+		// Regex specialCharsCheck = new(@"[[\]~`!@#$%^&*(){}=\-+\\*\.,<>;:'" + '"' + "|/?]");
+		// Regex numbersCheck = new(@"[0-9]");
+		// Regex lettersCheck = new(@"[A-Za-z_]");
+		// Regex onlySpecifiedCharsCheck = new(@"^(\w|[$[[\]~`!@#$%^&*(){}=\-+\\*\.,<>;:'" + '"' + "|/?])+$");
+
+		// if (password.Length < 8) return "Password is too short!";
+		// if (!specialCharsCheck.Match(password).Success) return "Password must have special characters!";
+		// if (!numbersCheck.Match(password).Success) return "Password must have numbers!";
+		// if (!lettersCheck.Match(password).Success) return "Password must have letters!";
+		// if (!onlySpecifiedCharsCheck.Match(password).Success) return "Password must not have unreconised symbols!";
+		
+		foreach (KeyValuePair<string, string> test in tests) {
+			Regex checkRegex = new(test.Key);
+			if (!checkRegex.Match(password).Success) return test.Value;
+		}
+		
+		return null;
+	}
+
+	static string CheckUsername(string username) {
+		Regex onlySpecifiedCharsCheck = new(@"^\w+$");
+
+		if (username.Length > 65) return "Username is too long! Maximum length is 64 characters!";
+		if (!onlySpecifiedCharsCheck.Match(username).Success) return "Username must have only letters or numbers or \"_\"!";
+		
+		return null;
 	}
 }
 

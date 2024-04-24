@@ -88,6 +88,7 @@ text = "Generate random"
 
 [node name="CheckButton" type="CheckButton" parent="Control/Panel/Control/HBoxContainer/Maze generation/MazeGeneration/VBoxContainer/HBoxContainer"]
 layout_mode = 2
+button_pressed = true
 
 [node name="Difficulty" type="VBoxContainer" parent="Control/Panel/Control/HBoxContainer/Maze generation/MazeGeneration"]
 layout_mode = 2

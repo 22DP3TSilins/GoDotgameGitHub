@@ -1,12 +1,11 @@
-[gd_scene load_steps=28 format=3 uid="uid://crwoedlavaj88"]
+[gd_scene load_steps=27 format=3 uid="uid://crwoedlavaj88"]
 
 [ext_resource type="Script" path="res://Scripts/Maze/AssynhronousLoading.cs" id="1_a6j46"]
 [ext_resource type="Shader" path="res://Shaders/Enviorment/Maze_floor/new_shader.gdshader" id="1_b7vy1"]
 [ext_resource type="Script" path="res://Scripts/Maze/MazeAlgoritm.cs" id="1_ifcgi"]
 [ext_resource type="PackedScene" uid="uid://bwox0pt6e740q" path="res://Scines/Player/player.tscn" id="1_m18n4"]
 [ext_resource type="Texture2D" uid="uid://bkwfgpgx73hss" path="res://icon.svg" id="2_snsk5"]
-[ext_resource type="Shader" path="res://Shaders/Enviorment/Maze_floor/floor1.gdshader" id="5_0mlbh"]
-[ext_resource type="PackedScene" uid="uid://biwpb3y5havo8" path="res://Blender/Meshes/Labyrinth/testMesh.blend" id="5_7k674"]
+[ext_resource type="Shader" path="res://Shaders/Enviorment/Maze_floor/floor2.gdshader" id="5_q0257"]
 [ext_resource type="PackedScene" uid="uid://bbaixijvx3j01" path="res://Scines/Levels/Finsh.tscn" id="6_1gojo"]
 [ext_resource type="PackedScene" uid="uid://0ywhovfe7yw4" path="res://Scines/Levels/ScoreBoard.tscn" id="8_fqjnu"]
 [ext_resource type="PackedScene" uid="uid://dm73q2sansfb5" path="res://Scines/Levels/ui.tscn" id="8_fqwvr"]
@@ -67,12 +66,10 @@ noise = SubResource("FastNoiseLite_d20lk")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_u85dc"]
 render_priority = 0
-shader = ExtResource("5_0mlbh")
-shader_parameter/noiseAmount = 0.08
+shader = ExtResource("5_q0257")
+shader_parameter/noiseAmount = 0.116
 shader_parameter/base_color = Color(0.537255, 0.482353, 0.447059, 1)
-shader_parameter/tiling = 0.0
-shader_parameter/lineSize = 0.1
-shader_parameter/scaleOfNode = 10.0
+shader_parameter/scale = 0.0
 shader_parameter/noise = SubResource("NoiseTexture2D_uod8q")
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_tkfys"]
@@ -130,7 +127,7 @@ shape = SubResource("ConcavePolygonShape3D_vqjeo")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9807, -2.64256, 0.402968)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="MazeWalls"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 37, 0, 35)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30, 0, 30)
 mesh = SubResource("PlaneMesh_tkfys")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="MazeWalls/MeshInstance3D"]
@@ -139,10 +136,6 @@ mesh = SubResource("PlaneMesh_tkfys")
 shape = SubResource("ConcavePolygonShape3D_dvr5e")
 
 [node name="Finish" parent="MazeWalls" instance=ExtResource("6_1gojo")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 37, 0, 35)
-
-[node name="testMesh" parent="." instance=ExtResource("5_7k674")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.297093, -0.0433149, 13.2705)
 
 [node name="MazeGen" type="Node3D" parent="."]
 script = ExtResource("1_ifcgi")

@@ -14,6 +14,7 @@ public partial class ui : Control
 	public CheckButton genRndMaze = null;
 	Label difficultyLabel = null;
 	public Slider difficultyInput = null;
+	ScoreBoard scoreBoard= null;
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
@@ -24,6 +25,7 @@ public partial class ui : Control
 		genRndMaze = GetNode<CheckButton>("Panel/Control/HBoxContainer/Maze generation/MazeGeneration/VBoxContainer/HBoxContainer/CheckButton");
 		difficultyLabel = GetNode<Label>("Panel/Control/HBoxContainer/Maze generation/MazeGeneration/Difficulty/Text");
 		difficultyInput = GetNode<Slider>("Panel/Control/HBoxContainer/Maze generation/MazeGeneration/Difficulty/Input");
+		scoreBoard = GetNode<ScoreBoard>("../../Scores");
 	}
 	
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -40,6 +42,7 @@ public partial class ui : Control
 	private void _camera_dist_changed(double value)
 	{
 		// Replace with function body.
+		
 		player1.MaxCameraDistance = (float)value;
 	}
 	private void _on_input_value_changed(double value)
@@ -57,9 +60,13 @@ public partial class ui : Control
 		// Replace with function body.
 		if (genRndMaze.ButtonPressed) {
 			mazeAlgoritm.genMaze((int)difficultyInput.Value, true);
+			scoreBoard.CurrentGameMode = new GameMode();
+
 		} else {
 			mazeAlgoritm.genMaze((int)difficultyInput.Value, true, (int)mazeSeed.Value);
+			scoreBoard.CurrentGameMode = new GameMode((int)difficultyInput.Value, (int)mazeSeed.Value);
 		}
+		scoreBoard.RestartTime();
 	}
 	private void _difficulty_changed(double value)
 	{

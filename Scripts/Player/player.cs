@@ -4,8 +4,8 @@ using System;
 
 public partial class player : CharacterBody3D
 {
-	[Export] public float acceleration = 1.0f / 0.5f;
-	[Export] public float stopping_acceleration = 10.0f;
+	[Export] public float acceleration = 1.0f / 0.25f;
+	[Export] public float stopping_acceleration = 20.0f;
 	[Export] public float mouseSensitivity = 0.003f;
 	
 	Vector3 velocity = Vector3.Zero;
@@ -18,7 +18,7 @@ public partial class player : CharacterBody3D
 
 	
 	public override void _Ready() {
-		Input.MouseMode = Input.MouseModeEnum.Captured;
+		Input.MouseMode = Input.MouseModeEnum.Visible;
 
 		camera = GetNode<Camera3D>("CameraRig/RotY/Camera");
 		cameraRotX = GetNode<Node3D>("CameraRig/RotY");
@@ -56,20 +56,24 @@ public partial class player : CharacterBody3D
 
 	public override void _PhysicsProcess(double delta)
 	{
-		if (login.Visible) {
-			
+		if (login.Visible || ui.Visible) {
+			scoreBoard.Stop();
+			HandleCameraCollision(new Vector2(0.0f, 0.0f));
+			return;
 		}
+		//  scoreBoard.Continue();
+		// StartClock();
 		Vector3 velocity = Velocity;
 		float VelocityY = velocity.Y;
 		
 		Vector2 inputXZ = Input.GetVector("move_left", "move_right", "move_forward", "move_backward");
-		if (!(inputXZ == Vector2.Zero)) StartClock();
+		if (!inputXZ.IsZeroApprox()) StartClock();
 		// float inputY = Input.GetAxis("fly_up", "fly_down");
 		Vector3 target_velocity = new Vector3();
-		Vector3 forward = camera.GlobalTransform.Basis.Z;
-		Vector3 right = camera.GlobalTransform.Basis.X;
+		Vector3 forward = GlobalTransform.Basis.Z;
+		Vector3 right = GlobalTransform.Basis.X;
 		// Vector3 up = camera.GlobalTransform.Basis.Y;
-		
+		GD.Print($"inputXY: {inputXZ.X}, {inputXZ.Y} end");
 		target_velocity += right * inputXZ.X;
 		target_velocity += forward * inputXZ.Y;
 		// target_velocity += up * inputY;
@@ -77,9 +81,11 @@ public partial class player : CharacterBody3D
 		
 		
 		target_velocity = target_velocity.Normalized() * Speed;
+		GD.Print($"vel {velocity.X}, {velocity.Y}, {velocity.Z} vel end");
 
 		float target_acceleration = acceleration;
 		if (target_velocity.LengthSquared() <= 0.1f) target_acceleration = stopping_acceleration;
+		if (!IsOnFloor()) target_acceleration /= 10;
 		velocity = velocity.Lerp(target_velocity, target_acceleration * (float)delta);
 		velocity.Y = VelocityY;
 		
@@ -89,7 +95,7 @@ public partial class player : CharacterBody3D
 
 		// Handle Jump.
 		if (Input.IsActionJustPressed("ui_accept") && IsOnFloor()) {
-			velocity.Y = JumpVelocity;
+			velocity.Y = JumpVelocity * 2;
 			StartClock();
 		}
 		// }
@@ -111,8 +117,9 @@ public partial class player : CharacterBody3D
 	}
 	
 	public override void _Input(InputEvent e) {
+		
 		if (e is InputEventMouseMotion && Input.MouseMode == Input.MouseModeEnum.Captured) {
-			StartClock();
+			// StartClock();
 			var m_event = e as InputEventMouseMotion;
 			Vector2 motion = -m_event.Relative * mouseSensitivity;
 
@@ -130,7 +137,8 @@ public partial class player : CharacterBody3D
 				camera.LookAt(ToGlobal(new Vector3(camera.Position.X, camera.Position.Y, 0.0f)), new Vector3(0.0f, 1.0f, 0.0f));
 			}
 		}
-		if (e.IsActionPressed("ui_cancel")) {
+		if (e.IsActionPressed("ui_cancel") && !login.Visible) {
+			// scoreBoard.Continue();
 			StartClock();
 			Input.MouseMode = Input.MouseMode == Input.MouseModeEnum.Captured ? Input.MouseModeEnum.Visible : Input.MouseModeEnum.Captured;
 			ui.Visible = Input.MouseMode == Input.MouseModeEnum.Visible;
@@ -153,7 +161,7 @@ public partial class player : CharacterBody3D
 	}
 
 	void StartClock() {
-		if (!Started) scoreBoard.StartClock();
+		if (!Started) scoreBoard.Continue();
 		Started = true;
 	}
 }

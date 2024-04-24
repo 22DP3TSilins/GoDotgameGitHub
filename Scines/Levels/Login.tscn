@@ -87,7 +87,7 @@ text = "Do not have an account?"
 [node name="Button" type="Button" parent="Control/Panel/VBoxContainer/SignIn"]
 custom_minimum_size = Vector2(130, 0)
 layout_mode = 2
-text = "Sign in"
+text = "Sign up"
 
 [connection signal="button_up" from="Control/Panel/VBoxContainer/LogIn/Button" to="Control" method="_log_in"]
 [connection signal="button_down" from="Control/Panel/VBoxContainer/SignIn/Button" to="Control" method="_sign_in"]

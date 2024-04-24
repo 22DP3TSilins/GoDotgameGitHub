@@ -8,7 +8,7 @@ public partial class Finish : Node3D
 	public override void _Ready()
 	{
 		GetNode<Area3D>("Mesh/Area3D").Monitoring = true;
-		scoreBoard = (ScoreBoard)GetNode<Node>("../../Scores");
+		scoreBoard = GetNode<ScoreBoard>("../../Scores");
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -20,7 +20,7 @@ public partial class Finish : Node3D
 		// Replace with function body.
 		GD.Print("Entered1");
 		GD.Print(body.Position.X);
-		scoreBoard?.Finish();
+		scoreBoard.Finish();
 	}
 
 	private void _on_area_3d_body_shape_entered(Rid body_rid, Node3D body, long body_shape_index, long local_shape_index)
