@@ -2,7 +2,7 @@
 
 ## Instalācija
 
-### Lejupielāe
+### Lejupielāde
 Lejupielādē [Godot mono](https://godotengine.org/download/archive/4.2-stable/) v4.2+ .
 Clonē repositoru https://github.com/22DP3TSilins/GoDotgameGitHub
 
