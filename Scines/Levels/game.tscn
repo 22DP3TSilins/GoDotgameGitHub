@@ -82,6 +82,7 @@ visible = false
 visible = false
 
 [node name="Map" type="CanvasLayer" parent="."]
+visible = false
 
 [node name="Control" type="Control" parent="Map"]
 layout_mode = 3
