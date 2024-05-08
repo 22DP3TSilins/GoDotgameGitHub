@@ -85,6 +85,7 @@ public partial class UI : Control
 		scoreBoard.RestartTime();
 		scoreBoard.SetGameMode();
 		SaveSettings(scoreBoard.user);
+		player1.Started = false;
 	}
 	private void _difficulty_changed(double value)
 	{
@@ -155,9 +156,3 @@ public partial class UI : Control
 		// Replace with function body.
 	}
 }
-
-
-
-
-
-

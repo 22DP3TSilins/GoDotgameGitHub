@@ -41,7 +41,7 @@ public partial class player : CharacterBody3D
 	public const float JumpVelocity = 5.2f;
 	public bool FlyMode = false;
 	float LastJump = 1.0f;
-	bool Started = false;
+	public bool Started = false;
 
 	[Export] public float MaxCameraDistance; 
 	[Export] public float CameraHight = 0.0f; 
@@ -78,8 +78,6 @@ public partial class player : CharacterBody3D
 		
 		target_velocity += right * inputXZ.X;
 		target_velocity += forward * inputXZ.Y;
-		// target_velocity += up * inputY;
-		// target_velocity.Y = FlyMode ? target_velocity.Y : 0.0f;
 		
 		
 		target_velocity = target_velocity.Normalized() * Speed;
@@ -139,8 +137,8 @@ public partial class player : CharacterBody3D
 			}
 		}
 		if (e.IsActionPressed("ui_cancel") && !login.Visible && !yesNo.Visible) {
-			// scoreBoard.Continue();
-			StartClock();
+			if (Started) scoreBoard.Continue();
+			// StartClock();
 			Input.MouseMode = Input.MouseMode == Input.MouseModeEnum.Captured ? Input.MouseModeEnum.Visible : Input.MouseModeEnum.Captured;
 			ui.Visible = Input.MouseMode == Input.MouseModeEnum.Visible;
 		}

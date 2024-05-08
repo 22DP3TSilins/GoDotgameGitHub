@@ -9,6 +9,7 @@ public partial class ScoreBoard : CanvasLayer
 {
 	
 	public UserData user;
+	player Player = null;
 	IDictionary<string, UserData> users;
 	UI ui = null;
 	CheckButton uiGenRndMaze = null;
@@ -30,6 +31,7 @@ public partial class ScoreBoard : CanvasLayer
 		GetNode<CanvasLayer>("../Login").Show();
 		login = GetNode<Login>("../Login/Control");
 		ui = GetNode<UI>("../UI/Control");
+		Player = GetNode<player>("../Player");
 		uiGenRndMaze = ui.GetNode<CheckButton>("Panel/Control/HBoxContainer/Maze generation/MazeGeneration/VBoxContainer/HBoxContainer/CheckButton");
 		
 		// allScores.Sort();
@@ -95,11 +97,13 @@ public partial class ScoreBoard : CanvasLayer
 		ui.SaveSettings(user);
 		if (newUser) users.Add(usernameHash, new UserData(login.GetUsernameFromHash(usernameHash)));
 		user = users[usernameHash];
-		user.RestartTime();
+		Player.Started = false;
+		// user.RestartTime();
 		user.Load();
 		ui.LoadSettings(user);
 		GD.Print(user == users[usernameHash]);
 		SetGameMode();
+		Player.Started = false;
 		// user.ContinueTime();
 	}
 	public void SetGameMode() {
@@ -121,11 +125,8 @@ public partial class ScoreBoard : CanvasLayer
 		if (user != null) user.Start = DateTime.Now;
 	}
 	public void Finish() {
-		if (ui.genRndMaze.ButtonPressed) {
-			user?.Finish(currentGameMode);
-		} else {
-			user?.Finish(currentGameMode);
-		}
+		Player.Started = false;
+		user?.Finish(currentGameMode);
 	}
 	public void Stop() {
 		user?.Stop();
