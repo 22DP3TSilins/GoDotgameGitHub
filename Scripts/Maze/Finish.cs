@@ -4,11 +4,13 @@ using System;
 public partial class Finish : Node3D
 {
 	ScoreBoard scoreBoard = null;
+	AudioStreamPlayer audioStreamPlayer = null;
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
 		GetNode<Area3D>("Mesh/Area3D").Monitoring = true;
 		scoreBoard = GetNode<ScoreBoard>("../../Scores");
+		audioStreamPlayer = GetNode<AudioStreamPlayer>("Mesh/AudioStreamPlayer");
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -19,6 +21,7 @@ public partial class Finish : Node3D
 	{
 		// Replace with function body.
 		scoreBoard.Finish();
+		audioStreamPlayer.Play();
 	}
 }
 

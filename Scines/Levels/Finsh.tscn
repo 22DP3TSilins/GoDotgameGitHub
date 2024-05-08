@@ -1,7 +1,8 @@
-[gd_scene load_steps=6 format=3 uid="uid://bbaixijvx3j01"]
+[gd_scene load_steps=7 format=3 uid="uid://bbaixijvx3j01"]
 
 [ext_resource type="Script" path="res://Scripts/Maze/Finish.cs" id="1_amc2f"]
 [ext_resource type="Shader" path="res://Shaders/Enviorment/currentXYMazeGen.gdshader" id="2_a0wsw"]
+[ext_resource type="AudioStream" uid="uid://baiegawwnj7d7" path="res://Sound/8-bit-victory-sound-101319.mp3" id="3_xn71h"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_eaupa"]
 render_priority = 0
@@ -23,6 +24,10 @@ mesh = SubResource("BoxMesh_yv7wi")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Mesh/Area3D"]
 shape = SubResource("ConcavePolygonShape3D_jv8p2")
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="Mesh"]
+stream = ExtResource("3_xn71h")
+volume_db = -18.571
 
 [connection signal="body_entered" from="Mesh/Area3D" to="." method="_on_area_3d_body_entered"]
 [connection signal="body_shape_entered" from="Mesh/Area3D" to="." method="_on_area_3d_body_shape_entered"]
