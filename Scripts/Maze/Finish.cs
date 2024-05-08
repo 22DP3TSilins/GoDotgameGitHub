@@ -18,18 +18,8 @@ public partial class Finish : Node3D
 	private void _on_area_3d_body_entered(Node3D body)
 	{
 		// Replace with function body.
-		GD.Print("Entered1");
-		GD.Print(body.Position.X);
 		scoreBoard.Finish();
 	}
-
-	private void _on_area_3d_body_shape_entered(Rid body_rid, Node3D body, long body_shape_index, long local_shape_index)
-	{
-		// Replace with function body.
-		GD.Print("Entered2");
-		GD.Print(body.Position.X);
-	}
-
 }
 
 

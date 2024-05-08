@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://cedh8lh0r2srk"]
+[gd_scene load_steps=7 format=3 uid="uid://b17s28sp55rq5"]
 
 [ext_resource type="Shader" path="res://Shaders/Enviorment/Maze_floor/new_shader.gdshader" id="1_ilswy"]
 

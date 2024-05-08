@@ -23,4 +23,9 @@ public partial class ScoreForPlayer : AspectRatioContainer
 		usernameLabel.Text = username;
 		placeLabel.Text = string.Format("{0}.", place);
 	}
+	public void ClearScore() {
+		scoreLabel.Text = "";
+		usernameLabel.Text = "";
+		placeLabel.Text = "";
+	}
 }

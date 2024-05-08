@@ -1,62 +1,18 @@
-[gd_scene load_steps=27 format=3 uid="uid://crwoedlavaj88"]
+[gd_scene load_steps=15 format=3 uid="uid://crwoedlavaj88"]
 
-[ext_resource type="Script" path="res://Scripts/Maze/AssynhronousLoading.cs" id="1_a6j46"]
-[ext_resource type="Shader" path="res://Shaders/Enviorment/Maze_floor/new_shader.gdshader" id="1_b7vy1"]
 [ext_resource type="Script" path="res://Scripts/Maze/MazeAlgoritm.cs" id="1_ifcgi"]
 [ext_resource type="PackedScene" uid="uid://bwox0pt6e740q" path="res://Scines/Player/player.tscn" id="1_m18n4"]
-[ext_resource type="Texture2D" uid="uid://bkwfgpgx73hss" path="res://icon.svg" id="2_snsk5"]
 [ext_resource type="Shader" path="res://Shaders/Enviorment/Maze_floor/floor2.gdshader" id="5_q0257"]
 [ext_resource type="PackedScene" uid="uid://bbaixijvx3j01" path="res://Scines/Levels/Finsh.tscn" id="6_1gojo"]
 [ext_resource type="PackedScene" uid="uid://0ywhovfe7yw4" path="res://Scines/Levels/ScoreBoard.tscn" id="8_fqjnu"]
 [ext_resource type="PackedScene" uid="uid://dm73q2sansfb5" path="res://Scines/Levels/ui.tscn" id="8_fqwvr"]
+[ext_resource type="PackedScene" uid="uid://dfdebkbn85y7h" path="res://Scines/Levels/YesNo.tscn" id="9_y2i0s"]
 [ext_resource type="PackedScene" uid="uid://b88sp4ogtrhd6" path="res://Scines/Levels/Login.tscn" id="10_ogbga"]
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_m1ed2"]
-seed = 3
-frequency = 0.0205
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_lnm3p"]
-generate_mipmaps = false
-seamless = true
-seamless_blend_skirt = 0.277
-noise = SubResource("FastNoiseLite_m1ed2")
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_eyoq8"]
-render_priority = 0
-shader = ExtResource("1_b7vy1")
-shader_parameter/noiseAmount = 0.1
-shader_parameter/base_color = Color(0.498039, 0.443137, 0.407843, 1)
-shader_parameter/xTiling = 2.37
-shader_parameter/yTiling = 4.46
-shader_parameter/scale = 10.0
-shader_parameter/lineSize = 0.1
-shader_parameter/noise = SubResource("NoiseTexture2D_lnm3p")
-
-[sub_resource type="PlaneMesh" id="PlaneMesh_osmkl"]
-material = SubResource("ShaderMaterial_eyoq8")
-
-[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_ewtdb"]
-data = PackedVector3Array(1, 0, 1, -1, 0, 1, 1, 0, -1, -1, 0, 1, -1, 0, -1, 1, 0, -1)
 
 [sub_resource type="Environment" id="Environment_ut6w0"]
 ambient_light_source = 2
 ambient_light_color = Color(1, 1, 0.768627, 1)
 volumetric_fog_density = 0.0184
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_e1cc6"]
-albedo_texture = ExtResource("2_snsk5")
-
-[sub_resource type="BoxMesh" id="BoxMesh_jbkgy"]
-material = SubResource("StandardMaterial3D_e1cc6")
-
-[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_0nvin"]
-data = PackedVector3Array(-0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, -0.5, -0.5, -0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, -0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, 0.5, 0.5, -0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, 0.5, 0.5, -0.5, 0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, -0.5)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fjpqd"]
-albedo_texture = ExtResource("2_snsk5")
-
-[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_vqjeo"]
-data = PackedVector3Array(-0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, -0.5, -0.5, -0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, -0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, 0.5, 0.5, -0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, 0.5, 0.5, -0.5, 0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, -0.5)
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_d20lk"]
 frequency = 0.0174
@@ -81,16 +37,6 @@ center_offset = Vector3(0, -2.5, 0)
 data = PackedVector3Array(30, -2.5, 30, -30, -2.5, 30, 30, -2.5, -30, -30, -2.5, 30, -30, -2.5, -30, 30, -2.5, -30)
 
 [node name="Node3D" type="Node3D"]
-script = ExtResource("1_a6j46")
-
-[node name="MeshInstance3D3" type="MeshInstance3D" parent="."]
-transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0, 0)
-mesh = SubResource("PlaneMesh_osmkl")
-
-[node name="StaticBody3D" type="StaticBody3D" parent="MeshInstance3D3"]
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="MeshInstance3D3/StaticBody3D"]
-shape = SubResource("ConcavePolygonShape3D_ewtdb")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_ut6w0")
@@ -102,26 +48,6 @@ sky_mode = 1
 
 [node name="Player" parent="." instance=ExtResource("1_m18n4")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.97865, 2.23039)
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.29281, 0.543285, 0)
-mesh = SubResource("BoxMesh_jbkgy")
-
-[node name="StaticBody3D" type="StaticBody3D" parent="MeshInstance3D"]
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="MeshInstance3D/StaticBody3D"]
-shape = SubResource("ConcavePolygonShape3D_0nvin")
-
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
-transform = Transform3D(7, 0, 0, 0, 1, 0, 0, 0, 2, -2.98281, 0.543285, -2.651)
-mesh = SubResource("BoxMesh_jbkgy")
-skeleton = NodePath("../MeshInstance3D")
-surface_material_override/0 = SubResource("StandardMaterial3D_fjpqd")
-
-[node name="StaticBody3D" type="StaticBody3D" parent="MeshInstance3D2"]
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="MeshInstance3D2/StaticBody3D"]
-shape = SubResource("ConcavePolygonShape3D_vqjeo")
 
 [node name="MazeWalls" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9807, -2.64256, 0.402968)
@@ -144,6 +70,9 @@ script = ExtResource("1_ifcgi")
 visible = false
 
 [node name="UI" parent="." instance=ExtResource("8_fqwvr")]
+visible = false
+
+[node name="YesNo" parent="." instance=ExtResource("9_y2i0s")]
 visible = false
 
 [node name="Login" parent="." instance=ExtResource("10_ogbga")]

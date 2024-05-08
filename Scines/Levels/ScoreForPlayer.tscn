@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://v1wr174pvgv8"]
 
-[ext_resource type="Script" path="res://Scripts/Maze/ScoreForPlayer.cs" id="1_rmd12"]
+[ext_resource type="Script" path="res://Scripts/UI/ScoreForPlayer.cs" id="1_j1j8k"]
 
 [node name="Control" type="AspectRatioContainer"]
 anchors_preset = 15
@@ -10,7 +10,7 @@ offset_right = -722.0
 offset_bottom = -613.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_rmd12")
+script = ExtResource("1_j1j8k")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 layout_mode = 2
@@ -25,7 +25,6 @@ layout_mode = 2
 [node name="Label" type="Label" parent="HBoxContainer/Place"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 25
-text = "1000."
 horizontal_alignment = 1
 vertical_alignment = 1
 max_lines_visible = 1
@@ -36,7 +35,6 @@ layout_mode = 2
 
 [node name="Label" type="Label" parent="HBoxContainer/Username"]
 layout_mode = 2
-text = "aaaaiugugiugjhes"
 text_overrun_behavior = 3
 
 [node name="Score" type="PanelContainer" parent="HBoxContainer"]
@@ -45,7 +43,7 @@ layout_mode = 2
 
 [node name="Label" type="Label" parent="HBoxContainer/Score"]
 layout_mode = 2
-text = "10.010
+text = "
 "
 horizontal_alignment = 1
 clip_text = true

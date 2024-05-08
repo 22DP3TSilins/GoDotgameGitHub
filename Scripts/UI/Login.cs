@@ -14,71 +14,72 @@ public partial class Login : Control
 {
 	// Called when the node enters the scene tree for the first time.
 	static internal byte[] peper = new byte[] {4, 7, 234, 78};
-	// internal 
-	internal protected struct User {
-		public byte[] Username; 
-		private byte[] EncPassword;
-		private byte[] Salt;
-		public byte[] userDataEncrypted {
-			get {
-				byte[] bytes = new byte[132];
-				Buffer.BlockCopy(Username, 0, bytes, 0, 64);
-				Buffer.BlockCopy(EncPassword, 0, bytes, 64, 64);
-				Buffer.BlockCopy(Salt, 0, bytes, 128, 4);
-				return bytes;
-			}
-			set {
-				Username =  new byte[64];
-				EncPassword = new byte[64];
-				Salt = new byte[4];
+	// // internal 
+	// internal protected struct User {
+	// 	public byte[] Username; 
+	// 	private byte[] EncPassword;
+	// 	private byte[] Salt;
+	// 	public byte[] userDataEncrypted {
+	// 		get {
+	// 			byte[] bytes = new byte[88];
+	// 			Buffer.BlockCopy(Username, 0, bytes, 0, 20);
+	// 			Buffer.BlockCopy(EncPassword, 0, bytes, 20, 64);
+	// 			Buffer.BlockCopy(Salt, 0, bytes, 84, 4);
+	// 			return bytes;
+	// 		}
+	// 		set {
+	// 			Username =  new byte[20];
+	// 			EncPassword = new byte[64];
+	// 			Salt = new byte[4];
 
-				Buffer.BlockCopy(value, 0, Username, 0, 64);
-				Buffer.BlockCopy(value, 64, EncPassword, 0, 64);
-				Buffer.BlockCopy(value, 128, Salt, 0, 4);
-			}}
+	// 			Buffer.BlockCopy(value, 0, Username, 0, 20);
+	// 			Buffer.BlockCopy(value, 20, EncPassword, 0, 64);
+	// 			Buffer.BlockCopy(value, 84, Salt, 0, 4);
+	// 		}}
 		
-		[MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
-		public readonly bool PasswordEqual(byte[] bytesPasswordPepered) {
-			byte[] encPassword = new byte[72];
+	// 	[MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
+	// 	public readonly bool PasswordEqual(byte[] bytesPasswordPepered) {
+	// 		byte[] encPassword = new byte[72];
 
-			Buffer.BlockCopy(bytesPasswordPepered, 0, encPassword, 0, 72);
-			Buffer.BlockCopy(Salt, 0, encPassword, 64, 4);
+	// 		Buffer.BlockCopy(bytesPasswordPepered, 0, encPassword, 0, 72);
+	// 		Buffer.BlockCopy(Salt, 0, encPassword, 64, 4);
 
-			return CryptographicOperations.FixedTimeEquals(EncPassword, hMACSHA512.ComputeHash(encPassword));
-		}
-		[MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
-		public User(string username, string userPassword)
-		{
-			byte[] bytes = new byte[4];
-			while (true) {
-				try {
-					using (var rng = new RNGCryptoServiceProvider()) {
-						rng.GetBytes(bytes);
-					}
-					break;
-				} catch (CryptographicException) {};
-			}
+	// 		return CryptographicOperations.FixedTimeEquals(EncPassword, hMACSHA512.ComputeHash(encPassword));
+	// 	}
+	// 	[MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
+	// 	public User(string username, string userPassword)
+	// 	{
+	// 		byte[] bytes = new byte[4];
+	// 		while (true) {
+	// 			try {
+	// 				using (var rng = new RNGCryptoServiceProvider()) {
+	// 					rng.GetBytes(bytes);
+	// 				}
+	// 				break;
+	// 			} catch (CryptographicException) {};
+	// 		}
 			
-			Salt = bytes;
+	// 		Salt = bytes;
 
-			byte[] bytes1Str = new byte[64];
-			byte[] usernameBytes = Encoding.UTF8.GetBytes(username);
-			Buffer.BlockCopy(usernameBytes, 0, bytes1Str, 0, usernameBytes.Length);
-			Username = bytes1Str;
+	// 		byte[] bytes1Str = new byte[20];
+	// 		byte[] usernameBytes = Encoding.UTF8.GetBytes(username);
+	// 		Buffer.BlockCopy(usernameBytes, 0, bytes1Str, 0, usernameBytes.Length);
+	// 		Username = bytes1Str;
 
-			byte[] bytesPassword = Encoding.UTF8.GetBytes(userPassword);
-			byte[] hashPassword = hMACSHA512.ComputeHash(bytesPassword);
-			byte[] encPassword = new byte[72];
+	// 		byte[] bytesPassword = Encoding.UTF8.GetBytes(userPassword);
+	// 		byte[] hashPassword = hMACSHA512.ComputeHash(bytesPassword);
+	// 		byte[] encPassword = new byte[72];
 
-			Buffer.BlockCopy(hashPassword, 0, encPassword, 0, 64);
-			Buffer.BlockCopy(Salt, 0, encPassword, 64, 4);
-			Buffer.BlockCopy(peper, 0, encPassword, 68, 4);
+	// 		Buffer.BlockCopy(hashPassword, 0, encPassword, 0, 64);
+	// 		Buffer.BlockCopy(Salt, 0, encPassword, 64, 4);
+	// 		Buffer.BlockCopy(peper, 0, encPassword, 68, 4);
 
-			EncPassword = hMACSHA512.ComputeHash(encPassword);
-			GD.Print(EncPassword.Length);
-			byte[] a = new byte[4];
-		}
-	}
+	// 		EncPassword = hMACSHA512.ComputeHash(encPassword);
+	// 	}
+	// }
+
+
+
 	// public readonly struct A {
 	// 	public readonly byte[] bytes1 = new byte[]{0, 2, 7};
 	// 	public A(byte[] bytes) {
@@ -90,14 +91,16 @@ public partial class Login : Control
 	// 	Name = name;
 	// 	MyInt = myInt;
 	// }};
-	internal protected IDictionary<string, User> users = new Dictionary<string, User>();
+	
+	IDictionary<string, User> users = new Dictionary<string, User>();
 	internal protected string usersSerialised;
 	LineEdit usernameNode = null;
 	LineEdit passwordNode = null;
 	Label isValidNode = null;
 	ScoreBoard scores = null;
-	internal protected User user1;
-	static readonly HMACSHA512 hMACSHA512 = new(new byte[]{2, 4, 5, 26});
+	User user1;
+	public string currentUserHash = "";
+	static readonly HMACSHA512 hmacsha512 = new(new byte[]{2, 4, 5, 26});
 	public override void _Ready()
 	{
 		usernameNode = GetNode<LineEdit>("Panel/VBoxContainer/Username/LineEdit");
@@ -119,22 +122,15 @@ public partial class Login : Control
 		// users.Add(hMACSHA512.ComputeHash(bytesUsername).HexEncode(), new User(username2, "b"));
 
 		// usersSerialised = JsonSerializer.Serialize(users);
-		// GD.Print(usersSerialised);
 		// File.WriteAllText("Data/Users.json", usersSerialised);
 
 		// usersSerialised = JsonSerializer.Serialize(new ABCD("abc", 8));
-		// GD.Print(usersSerialised);
 		// File.WriteAllText("Data/Users.json", usersSerialised);
-		// GD.Print("AAAAAAreadAAAA");
 		string jsonData = File.ReadAllText("Data/Users.json");
-		// GD.Print(jsonData);
-		// GD.Print("AAAAAAreadAAAA");
 		// string jsonData = File.ReadAllText("res://Users");
 		// try {
 		users = JsonSerializer.Deserialize<IDictionary<string, User>>(jsonData);
-		// GD.Print(users.Count);
 		// } catch (Exception) {
-		// 	GD.Print("whhy");
 		// }
 		
 	}
@@ -147,14 +143,18 @@ public partial class Login : Control
 	private void _log_in()
 	{
 		// Replace with function body.
-		GD.Print("Login Start:");
-		byte[] bytesUsername = new byte[64];
+		byte[] bytesUsername = new byte[20];
+		if (usernameNode.Text.Length > 20) {
+			isValidNode.Text = "Username and/or password is incorrect!";
+			isValidNode.Show();
+			return;
+		}
 		byte[] username = Encoding.UTF8.GetBytes(usernameNode.Text);
 		Buffer.BlockCopy(username, 0, bytesUsername, 0, username.Length);
-		byte[] usernameHashed = hMACSHA512.ComputeHash(bytesUsername);
+		byte[] usernameHashed = hmacsha512.ComputeHash(bytesUsername);
 
 		byte[] bytesPassword = Encoding.UTF8.GetBytes(passwordNode.Text);
-		byte[] hashPassword = hMACSHA512.ComputeHash(bytesPassword);
+		byte[] hashPassword = hmacsha512.ComputeHash(bytesPassword);
 		byte[] pepperedPassword = new byte[72];
 
 		Buffer.BlockCopy(hashPassword, 0, pepperedPassword, 0, 64);
@@ -165,8 +165,8 @@ public partial class Login : Control
 				GetParent<CanvasLayer>().Hide();
 				scores.Show();
 				scores.SetCurrentUser(usernameHashed.HexEncode(), false);
-				GD.Print("Login End success:");
 				Input.MouseMode = Input.MouseModeEnum.Captured;
+				currentUserHash = usernameHashed.HexEncode();
 
 				return;
 			}
@@ -174,7 +174,6 @@ public partial class Login : Control
 
 		isValidNode.Text = "Username and/or password is incorrect!";
 		isValidNode.Show();
-		GD.Print("Login End fail:");
 		
 	}
 
@@ -182,42 +181,37 @@ public partial class Login : Control
 	private void _sign_in()
 	{
 		// Replace with function body.
-
 		string passwordResult = CheckPassword(passwordNode.Text);
 		string usernameResult = CheckUsername(usernameNode.Text);
 
 		if (passwordResult != null) {
 			isValidNode.Text = passwordResult;
 			isValidNode.Show();
-			GD.Print("fail password");
 			return;
 		}
 
 		if (usernameResult != null) {
 			isValidNode.Text = usernameResult;
 			isValidNode.Show();
-			GD.Print("fail username");
 			return;
 		}
-		byte[] bytesUsername = new byte[64];
+		byte[] bytesUsername = new byte[20];
 		byte[] username = Encoding.UTF8.GetBytes(usernameNode.Text);
 		Buffer.BlockCopy(username, 0, bytesUsername, 0, username.Length);
-		byte[] usernameHashed = hMACSHA512.ComputeHash(bytesUsername);
+		byte[] usernameHashed = hmacsha512.ComputeHash(bytesUsername);
 
 		if (users.ContainsKey(usernameHashed.HexEncode())) {
 			isValidNode.Text = "Username already exists!";
 			isValidNode.Show();
-			GD.Print("fail exists");
 			return;
 		}
 		
 		users.Add(usernameHashed.HexEncode(), new User(usernameNode.Text, passwordNode.Text));
 		GetParent<CanvasLayer>().Hide();
 		scores.Show();
-		// scores.AddUserScore(usernameHashed.HexEncode());
 		scores.SetCurrentUser(usernameHashed.HexEncode(), true);
-		GD.Print("success");
 		Input.MouseMode = Input.MouseModeEnum.Captured;
+		currentUserHash = usernameHashed.HexEncode();
 	
 	}
 	public override void _Notification(int what) {
@@ -230,32 +224,23 @@ public partial class Login : Control
 
 	public string GetUsernameFromHash(string usernameHashed) {
 		if (users.ContainsKey(usernameHashed)) {
-			return Encoding.UTF8.GetString(users[usernameHashed].Username);
+			
+			string usernemeWwithNull = Encoding.UTF8.GetString(users[usernameHashed].Username);
+			return usernemeWwithNull[..usernemeWwithNull.Find('\x00')];
 		}
 		return null;
 	}
-
-	static string CheckPassword(string password) {
-		IDictionary<string, string> tests = new Dictionary<string, string>(){
-			{@"[[\]~`!@#$%^&*(){}=\-+\\*\.,<>;:'" + '"' + "|/?]", "Password must have special characters!"},
-			{@"[0-9]", "Password must have numbers!"},
-			{@"[A-Za-z_]", "Password must have letters!"},
-			{@"^(\w|[$[[\]~`!@#$%^&*(){}=\-+\\*\.,<>;:'" + '"' + "|/?])+$", "Password must not have unreconised symbols!"}
+	IDictionary<Regex, string> tests = new Dictionary<Regex, string>(){
+			{new Regex(@"[[\]~`!@#$%^&*(){}=\-+\\*\.,<>;:'" + '"' + "|/?]"), "Password must have special characters!"},
+			{new Regex(@"[0-9]"), "Password must have numbers!"},
+			{new Regex(@"[A-Za-z_]"), "Password must have letters!"},
+			{new Regex(@"^(\w|[$[[\]~`!@#$%^&*(){}=\-+\\*\.,<>;:'" + '"' + "|/?])+$"), "Password must not have unreconised symbols!"}
 		};
-		// Regex specialCharsCheck = new(@"[[\]~`!@#$%^&*(){}=\-+\\*\.,<>;:'" + '"' + "|/?]");
-		// Regex numbersCheck = new(@"[0-9]");
-		// Regex lettersCheck = new(@"[A-Za-z_]");
-		// Regex onlySpecifiedCharsCheck = new(@"^(\w|[$[[\]~`!@#$%^&*(){}=\-+\\*\.,<>;:'" + '"' + "|/?])+$");
-
-		// if (password.Length < 8) return "Password is too short!";
-		// if (!specialCharsCheck.Match(password).Success) return "Password must have special characters!";
-		// if (!numbersCheck.Match(password).Success) return "Password must have numbers!";
-		// if (!lettersCheck.Match(password).Success) return "Password must have letters!";
-		// if (!onlySpecifiedCharsCheck.Match(password).Success) return "Password must not have unreconised symbols!";
+	string CheckPassword(string password) {
+		if (password.Length < 8) return "Password is too short! Minimum is 8 characters!";
 		
-		foreach (KeyValuePair<string, string> test in tests) {
-			Regex checkRegex = new(test.Key);
-			if (!checkRegex.Match(password).Success) return test.Value;
+		foreach (KeyValuePair<Regex, string> test in tests) {
+			if (!test.Key.Match(password).Success) return test.Value;
 		}
 		
 		return null;
@@ -264,12 +249,21 @@ public partial class Login : Control
 	static string CheckUsername(string username) {
 		Regex onlySpecifiedCharsCheck = new(@"^\w+$");
 
-		if (username.Length > 65) return "Username is too long! Maximum length is 64 characters!";
+		if (username.Length > 20) return "Username is too long! Maximum length is 20 characters!";
 		if (!onlySpecifiedCharsCheck.Match(username).Success) return "Username must have only letters or numbers or \"_\"!";
 		
 		return null;
 	}
+	public void ClearInputs() {
+		usernameNode.Text = "";
+		passwordNode.Text = "";
+
+		scores.Hide();
+		isValidNode.Hide();
+	}
+	public void DeleteAccount() {
+		ClearInputs();
+
+		if (users.ContainsKey(currentUserHash)) users.Remove(currentUserHash);
+	}
 }
-
-
-

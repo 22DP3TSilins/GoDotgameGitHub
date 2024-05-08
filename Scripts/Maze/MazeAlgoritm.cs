@@ -2,28 +2,17 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public readonly struct coords {
-	public readonly int X;
-	public readonly int Y;
-
-	public coords (int x, int y){
-		X = x;
-		Y = y;
-	}
-}
 
 public partial class MazeAlgoritm : Node3D
 {
 	enum Wall: byte {Up = 1, Left = 2, Visited = 4, Explored = 8}
 	Node3D meshes = null;
-	IDictionary<coords, coords> customMazeBehavior = new Dictionary<coords, coords>();
+	IDictionary<Coords, Coords> customMazeBehavior = new Dictionary<Coords, Coords>();
 	List<Node3D> wallMeshes = new List<Node3D>();
 	Finish finish = null;
 	player Player = null;
 	public override void _Ready()
 	{
-		
-		GD.Print("Maze is cookin...");
 		meshes = GetNode<Node3D>("../MazeWalls");
 		finish = meshes.GetNode<Finish>("Finish");
 		Player = GetNode<player>("../Player");
@@ -31,7 +20,6 @@ public partial class MazeAlgoritm : Node3D
 		// byte[,] walls = genMazeWalls();
 		// AssyncLoadMaze(walls);
 		// await Task.Run(() => genMaze());
-		GD.Print("Maze is cooked");
 		// solveMaze(walls, new coords(1, 1));
 	}
 
@@ -61,8 +49,6 @@ public partial class MazeAlgoritm : Node3D
 			newPlayerPos += new Vector3(0.0f, 0.0f, rnd.Next(0, size - 1)) * spacing;
 		}
 		Player.Position = newPlayerPos;
-		
-		GD.Print($"aaa {size}: " + rnd.NextDouble());
 	}
 	
 
@@ -90,7 +76,7 @@ public partial class MazeAlgoritm : Node3D
 			}
 			wallMeshes = new List<Node3D>();
 		}
-		const float floor = -4;
+		const float floor = 0.0f;
 		for (int i = 1; i < sizex + 2; i++) {
 			for (int j = 0; j < sizey + 1; j++) {
 				if ((walls[i][j] & (byte)Wall.Up) == 0 && (j != 0)) {
@@ -124,7 +110,6 @@ public partial class MazeAlgoritm : Node3D
 				wallMeshes.Add(testMesh);
 			}
 		}
-		GD.Print("Loading... labyrinth");
 	}
 	public List<List<byte>> genMazeWalls(int size, int seed = -1) {
 		Random rnd;
@@ -164,13 +149,13 @@ public partial class MazeAlgoritm : Node3D
 
 		byte currentCell;
 		byte currentWall;
-		coords currentDir;
-		coords currentCellAround;
+		Coords currentDir;
+		Coords currentCellAround;
 		int randWall;
 
 		int[] cellWalls = new int[4];
-		coords[] directions = new [] { new coords(0, 0), new coords(0, 0), new coords(1, 0), new coords(0, -1) };
-		coords[] cellsAround = new [] { new coords(-1, 0), new coords(0, 1), new coords(1, 0), new coords(0, -1) };
+		Coords[] directions = new [] { new Coords(0, 0), new Coords(0, 0), new Coords(1, 0), new Coords(0, -1) };
+		Coords[] cellsAround = new [] { new Coords(-1, 0), new Coords(0, 1), new Coords(1, 0), new Coords(0, -1) };
 
 		int randDir;
 
@@ -190,12 +175,11 @@ public partial class MazeAlgoritm : Node3D
 						j++;
 					}
 				} catch (IndexOutOfRangeException) {
-					GD.Print("out of range1");
 					break;
 				}
 			}
 			if (j == 0) {
-				bool a = true;
+				
 				walls[currentx][currenty] |= 8;
 				for (int i = 0; i < 4; i++) {
 					
@@ -209,35 +193,11 @@ public partial class MazeAlgoritm : Node3D
 					if(((currentCell & ((byte)Wall.Visited | (byte)Wall.Explored)) == 4) && ((currentWall & (byte)((i % 2) + 1)) > 0)) {
 						currentx += currentCellAround.X;
 						currenty += currentCellAround.Y;
-
-						a = false;
 						break;
 					}
 				}
-				if (a) {
-					for (int i = 0; i < 4; i++) {
-						currentDir = directions[i];
-						currentCellAround = cellsAround[i];
-
-						currentWall = walls[currentx + currentDir.X][currenty + currentDir.Y];
-						currentCell = walls[currentx + currentCellAround.X][currenty + currentCellAround.Y];
-						GD.Print($"Wall: {currentWall}\nCell: {currentCell}");
-					}
-					string row = "";
-					string newNum = "";
-					for (int i = 0; i < sizex + 3; i++) {
-						row = "";
-						for (int k = 0; k < sizey + 3; k++) {
-							newNum = " " + +walls[i][k];
-							row += newNum.Length == 2 ? " " + newNum : newNum;
-						}
-						GD.Print(row + "\n");
-					}
-					GD.Print("\n");
-					GD.Print("aaaaaa");
-					break;
-				}
-				if (currentx == startx && currenty == starty) {GD.Print("reached start"); break;}
+				
+				if (currentx == startx && currenty == starty) break;
 			} else {
 				randDir = rnd.Next(0, j);
 				randWall = cellWalls[randDir];

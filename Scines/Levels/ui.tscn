@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://dm73q2sansfb5"]
 
-[ext_resource type="Script" path="res://Scripts/Maze/ui.cs" id="1_lw2q3"]
+[ext_resource type="Script" path="res://Scripts/UI/UI.cs" id="1_rbncn"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8qv7v"]
 content_margin_left = 20.0
@@ -25,7 +25,7 @@ offset_right = 2.0
 offset_bottom = 2.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_lw2q3")
+script = ExtResource("1_rbncn")
 
 [node name="Panel" type="Panel" parent="Control"]
 layout_mode = 1
@@ -35,9 +35,9 @@ anchor_top = 0.489
 anchor_right = 0.502
 anchor_bottom = 0.489
 offset_left = -251.0
-offset_top = -141.85
+offset_top = -137.85
 offset_right = 252.692
-offset_bottom = 142.15
+offset_bottom = 198.15
 
 [node name="Control" type="Control" parent="Control/Panel"]
 layout_mode = 1
@@ -95,7 +95,7 @@ layout_mode = 2
 
 [node name="Text" type="Label" parent="Control/Panel/Control/HBoxContainer/Maze generation/MazeGeneration/Difficulty"]
 layout_mode = 2
-text = "Difficulty: Medium"
+text = "Difficulty: Easy"
 
 [node name="Input" type="HSlider" parent="Control/Panel/Control/HBoxContainer/Maze generation/MazeGeneration/Difficulty"]
 layout_mode = 2
@@ -169,8 +169,24 @@ max_value = 3.0
 step = 0.01
 value = 2.0
 
+[node name="VBoxContainer" type="VBoxContainer" parent="Control/Panel/Control"]
+layout_mode = 0
+offset_top = 289.0
+offset_right = 485.0
+offset_bottom = 357.0
+
+[node name="Button2" type="Button" parent="Control/Panel/Control/VBoxContainer"]
+layout_mode = 2
+text = "Log out"
+
+[node name="Button" type="Button" parent="Control/Panel/Control/VBoxContainer"]
+layout_mode = 2
+text = "Delete account"
+
 [connection signal="button_up" from="Control/Panel/Control/HBoxContainer/Maze generation/MazeGeneration/VBoxContainer/Button" to="Control" method="_gen_maze"]
 [connection signal="value_changed" from="Control/Panel/Control/HBoxContainer/Maze generation/MazeGeneration/Difficulty/Input" to="Control" method="_difficulty_changed"]
 [connection signal="value_changed" from="Control/Panel/Control/HBoxContainer/Camera settings/CameraSettings/FOV/Input" to="Control" method="_fov_changed"]
 [connection signal="value_changed" from="Control/Panel/Control/HBoxContainer/Camera settings/CameraSettings/Ofset/Input" to="Control" method="_ofset_changed"]
 [connection signal="value_changed" from="Control/Panel/Control/HBoxContainer/Camera settings/CameraSettings/Distance/Input" to="Control" method="_camera_dist_changed"]
+[connection signal="button_up" from="Control/Panel/Control/VBoxContainer/Button2" to="Control" method="LogOut"]
+[connection signal="button_up" from="Control/Panel/Control/VBoxContainer/Button" to="Control" method="DeleteAccount"]

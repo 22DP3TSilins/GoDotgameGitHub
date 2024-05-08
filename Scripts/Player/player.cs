@@ -15,6 +15,7 @@ public partial class player : CharacterBody3D
 	CanvasLayer ui = null;
 	ScoreBoard scoreBoard = null;
 	CanvasLayer login = null;
+	YesNo yesNo = null;
 
 	
 	public override void _Ready() {
@@ -33,6 +34,7 @@ public partial class player : CharacterBody3D
 		cameraColisionDetector.HitBackFaces = false;
 
 		login = GetNode<CanvasLayer>("../Login");
+		yesNo = GetNode<YesNo>("../YesNo");
 	}
 	
 	public const float Speed = 5.0f;
@@ -56,7 +58,7 @@ public partial class player : CharacterBody3D
 
 	public override void _PhysicsProcess(double delta)
 	{
-		if (login.Visible || ui.Visible) {
+		if (login.Visible || ui.Visible || yesNo.Visible) {
 			scoreBoard.Stop();
 			HandleCameraCollision(new Vector2(0.0f, 0.0f));
 			return;
@@ -73,7 +75,7 @@ public partial class player : CharacterBody3D
 		Vector3 forward = GlobalTransform.Basis.Z;
 		Vector3 right = GlobalTransform.Basis.X;
 		// Vector3 up = camera.GlobalTransform.Basis.Y;
-		GD.Print($"inputXY: {inputXZ.X}, {inputXZ.Y} end");
+		
 		target_velocity += right * inputXZ.X;
 		target_velocity += forward * inputXZ.Y;
 		// target_velocity += up * inputY;
@@ -81,7 +83,6 @@ public partial class player : CharacterBody3D
 		
 		
 		target_velocity = target_velocity.Normalized() * Speed;
-		GD.Print($"vel {velocity.X}, {velocity.Y}, {velocity.Z} vel end");
 
 		float target_acceleration = acceleration;
 		if (target_velocity.LengthSquared() <= 0.1f) target_acceleration = stopping_acceleration;
@@ -95,7 +96,7 @@ public partial class player : CharacterBody3D
 
 		// Handle Jump.
 		if (Input.IsActionJustPressed("ui_accept") && IsOnFloor()) {
-			velocity.Y = JumpVelocity * 2;
+			velocity.Y = JumpVelocity;
 			StartClock();
 		}
 		// }
@@ -137,7 +138,7 @@ public partial class player : CharacterBody3D
 				camera.LookAt(ToGlobal(new Vector3(camera.Position.X, camera.Position.Y, 0.0f)), new Vector3(0.0f, 1.0f, 0.0f));
 			}
 		}
-		if (e.IsActionPressed("ui_cancel") && !login.Visible) {
+		if (e.IsActionPressed("ui_cancel") && !login.Visible && !yesNo.Visible) {
 			// scoreBoard.Continue();
 			StartClock();
 			Input.MouseMode = Input.MouseMode == Input.MouseModeEnum.Captured ? Input.MouseModeEnum.Visible : Input.MouseModeEnum.Captured;
@@ -154,7 +155,6 @@ public partial class player : CharacterBody3D
 			posOfCameraColision = ToLocal(cameraColisionDetector.GetCollisionPoint());
 			float len = new Vector3(CameraOfset, CameraHight, MaxCameraDistance).Length() / posOfCameraColision.Length() + 0.01f;
 			camera.Position = new Vector3(CameraOfset, CameraHight, MaxCameraDistance) / len;
-			GD.Print($"Col: {cameraColisionDetector.GetCollisionPoint()}");
 		} else {
 			camera.Position = new Vector3(CameraOfset, CameraHight, MaxCameraDistance);
 		}

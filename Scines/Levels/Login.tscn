@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://b88sp4ogtrhd6"]
 
-[ext_resource type="Script" path="res://Scripts/Maze/Login.cs" id="1_pdy4o"]
+[ext_resource type="Script" path="res://Scripts/UI/Login.cs" id="1_pdy4o"]
 
 [node name="CanvasLayer" type="CanvasLayer"]
 

@@ -24,7 +24,7 @@ CameraOfset = 0.97
 shape = SubResource("CapsuleShape3D_jc4pe")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-transform = Transform3D(0.98, 0, 0, 0, 0.98, 0, 0, 0, 0.98, 0, -0.01, 0)
+transform = Transform3D(-0.98, 0, -8.56743e-08, 0, 0.98, 0, 8.56743e-08, 0, -0.98, 0, -0.01, 0)
 mesh = SubResource("CapsuleMesh_q81o0")
 surface_material_override/0 = SubResource("ShaderMaterial_hxm4g")
 

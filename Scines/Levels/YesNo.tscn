@@ -1,0 +1,70 @@
+[gd_scene load_steps=2 format=3 uid="uid://dfdebkbn85y7h"]
+
+[ext_resource type="Script" path="res://Scripts/UI/YesNo.cs" id="1_ntyjl"]
+
+[node name="CanvasLayer" type="CanvasLayer"]
+script = ExtResource("1_ntyjl")
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_bottom = 6.0
+
+[node name="Panel" type="Panel" parent="Control"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.289
+anchor_top = 0.335
+anchor_right = 0.727
+anchor_bottom = 0.67
+offset_left = 0.071991
+offset_top = -0.0900116
+offset_right = -0.504089
+offset_bottom = 30.82
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="Control/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 77.0
+offset_top = 17.0
+offset_right = -64.0
+offset_bottom = -133.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 24
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Control/Panel/Label"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = -0.209
+anchor_top = 1.0
+anchor_right = 1.171
+anchor_bottom = 1.0
+offset_left = -0.132996
+offset_top = 28.0
+offset_right = -0.072998
+offset_bottom = 102.0
+theme_override_constants/separation = 180
+alignment = 1
+
+[node name="Button" type="Button" parent="Control/Panel/Label/HBoxContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Yes"
+
+[node name="Button2" type="Button" parent="Control/Panel/Label/HBoxContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "No"
+
+[connection signal="button_up" from="Control/Panel/Label/HBoxContainer/Button" to="." method="Yes"]
+[connection signal="button_up" from="Control/Panel/Label/HBoxContainer/Button2" to="." method="No"]
