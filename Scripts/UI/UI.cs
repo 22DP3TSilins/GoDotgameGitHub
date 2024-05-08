@@ -72,7 +72,7 @@ public partial class UI : Control
 		// Replace with function body.
 		player1.CameraOfset = (float)value;
 	}
-	private void _gen_maze()
+	public void _gen_maze()
 	{
 		// Replace with function body.
 		if (genRndMaze.ButtonPressed) {
@@ -83,6 +83,21 @@ public partial class UI : Control
 		}
 
 		scoreBoard.RestartTime();
+		scoreBoard.SetGameMode();
+		SaveSettings(scoreBoard.user);
+		player1.Started = false;
+	}
+	public void _gen_maze(bool RestartTime, bool resetLocation)
+	{
+		// Replace with function body.
+		if (genRndMaze.ButtonPressed) {
+			mazeAlgoritm.genMaze((int)difficultyInput.Value, true, -1, resetLocation);
+
+		} else {
+			mazeAlgoritm.genMaze((int)difficultyInput.Value, true, (int)mazeSeed.Value, resetLocation);
+		}
+
+		if (RestartTime) scoreBoard.RestartTime();
 		scoreBoard.SetGameMode();
 		SaveSettings(scoreBoard.user);
 		player1.Started = false;

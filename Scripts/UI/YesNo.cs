@@ -1,6 +1,4 @@
 using Godot;
-using System;
-using System.ComponentModel.Design;
 
 public partial class YesNo : CanvasLayer
 {
@@ -33,9 +31,6 @@ public partial class YesNo : CanvasLayer
 	}
 	public void AskYesNo(string what) {
 		Question = what;
-		GD.Print(what);
-		GD.Print(ui.YesNoFunc.ContainsKey(Question));
-		GD.Print(ui.YesNoFunc[Question].Msg);
 		labelQuestion.Text = ui.YesNoFunc[Question].Msg;
 		Visible = true;
 	}

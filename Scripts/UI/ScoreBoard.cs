@@ -16,26 +16,18 @@ public partial class ScoreBoard : CanvasLayer
 	Login login = null;
 	GameMode currentGameMode;
 	ScoreForPlayer[] leaderBoard = new ScoreForPlayer[4];
-	// Called when the node enters the scene tree for the first time.
-	// 5251b6c1d47e864df4c010698dc6a398358d07ed7589ee82140ea307fcfa219a82c57cdabb72de18e86e840d1a3e2f3b30726f2514d47e3d9cd9cecad16ad09c
 	public override void _Ready()
 	{
-		// File.WriteAllText("Data/Scores.json", JsonSerializer.Serialize(
-		// 	new Dictionary<string, UserData>(){{
-		// 		"5251b6c1d47e864df4c010698dc6a398358d07ed7589ee82140ea307fcfa219a82c57cdabb72de18e86e840d1a3e2f3b30726f2514d47e3d9cd9cecad16ad09c", 
-		// 		new UserData()}}));
-		// File.WriteAllText("Data/Scores.json", JsonSerializer.Serialize(users));
 		string jsonData = File.ReadAllText("Data/Scores.json");
 		users = JsonSerializer.Deserialize<IDictionary<string, UserData>>(jsonData);
-		foreach (var userForEach in users) userForEach.Value.Load();
+		
+		Player = GetNode<player>("../Player");
+		foreach (var userForEach in users) userForEach.Value.Load(Player);
 		GetNode<CanvasLayer>("../Login").Show();
 		login = GetNode<Login>("../Login/Control");
 		ui = GetNode<UI>("../UI/Control");
-		Player = GetNode<player>("../Player");
 		uiGenRndMaze = ui.GetNode<CheckButton>("Panel/Control/HBoxContainer/Maze generation/MazeGeneration/VBoxContainer/HBoxContainer/CheckButton");
 		
-		// allScores.Sort();
-		// allScores = allScores.ToDictionary<string, TimeSpan>(key => key.Key);
 		for (int i = 0; i < 4; i++) {
 			leaderBoard[i] = GetNode("Control/VBoxContainer").GetChild<ScoreForPlayer>(i+1);
 		}
@@ -46,26 +38,31 @@ public partial class ScoreBoard : CanvasLayer
 	public override void _Process(double delta)
 	{
 			IDictionary<string, TimeSpan> allScores = new Dictionary<string, TimeSpan>();
-			int IofUser = -1;
-			int i = 0;
 			int i2 = 0;
 			// GD.Print("ForEach start:");
 			foreach (KeyValuePair<string, UserData> userForEach in users) {
 				TimeSpan userScore = userForEach.Value.GetBestTime(currentGameMode);
-				if (userForEach.Value == user) IofUser = i;
+				
 				if (userScore != TimeSpan.Zero) {
 					allScores.Add(userForEach.Value.Username, userScore);
 					// GD.Print($"i: {i} {i2} ss:");
-					i++;
 
 				} else {
 					// GD.Print($"i: {i} {i2} f:");
 				}
-				i2++;
 			}
 			// GD.Print("ForEach end:\n");
 
 			var sorted = allScores.OrderBy(key => key.Value).ThenBy(key => key.Key);
+			
+			int IofUser = -1;
+			int i = 0;
+			if (!(user == null)) {
+				foreach (var userForEach in sorted) {
+					if (string.Compare(userForEach.Key, user.Username) == 0) IofUser = i;
+					i++;
+				}
+			}
 
 			for (i = 0; i < 3; i++) leaderBoard[i].ClearScore();
 
@@ -76,8 +73,9 @@ public partial class ScoreBoard : CanvasLayer
 				i++;
 			}
 			
-			if (user != null && IofUser != -1) {
-				leaderBoard[3].SetScore(IofUser + 1, user.Username, user.GetTime);
+			if (user != null) {
+				
+				leaderBoard[3].SetScore(IofUser == -1 ? sorted.Count() + 1 : IofUser + 1, user.Username, user.GetTime);
 			}
 
 		// } else {
@@ -98,10 +96,12 @@ public partial class ScoreBoard : CanvasLayer
 		if (newUser) users.Add(usernameHash, new UserData(login.GetUsernameFromHash(usernameHash)));
 		user = users[usernameHash];
 		Player.Started = false;
+		ui._gen_maze(false, user.Finished || newUser);
+		user.Finished = false;
+		user.SetPos(Player);
 		// user.RestartTime();
-		user.Load();
+		user.Load(Player);
 		ui.LoadSettings(user);
-		GD.Print(user == users[usernameHash]);
 		SetGameMode();
 		Player.Started = false;
 		// user.ContinueTime();
@@ -114,7 +114,7 @@ public partial class ScoreBoard : CanvasLayer
 	{
 		if (what == NotificationWMCloseRequest) {
 			Stop();
-			user?.Save();
+			user?.Save(Player);
 			ui.SaveSettings(user);
 			
 			File.WriteAllText("Data/Scores.json", JsonSerializer.Serialize(users));

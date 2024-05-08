@@ -11,6 +11,9 @@ public class UserData {
 	public string Username {get; set;}
 	public IDictionary<string, double> Settings {get; set;}
 	public TimeSpan TimeFinished {get; set;} = TimeSpan.Zero;
+	public float X {get; set;}
+	public float Y {get; set;}
+	public float Z {get; set;}
 	// public GameMode currentGameMode = new();
 	// public string CurrentGameMode {
 	// get {
@@ -19,7 +22,6 @@ public class UserData {
 	// 	currentGameMode = new GameMode(value);
 	// }}
 	public void Finish(GameMode gameMode) {
-		GD.PushWarning("Is called");
 		Finished = true;
 		TimeFinished = DateTime.Now - Start;
 		Stop();
@@ -77,6 +79,9 @@ public class UserData {
 			{"mazeSeed", 0.0},
 			{"randMaze", 1.0}
 		};
+		// X = Player.Position.X;
+		// Y = Player.Position.Y;
+		// Z = Player.Position.Z;
 	}
 	public void RestartTime() {
 		Start = DateTime.Now;
@@ -84,39 +89,26 @@ public class UserData {
 		WasJustStopped = false;
 	}
 
-	public void Save() {
-		// IDictionary<string, TimeSpan> data = new Dictionary<string, TimeSpan>();
-		GD.PushWarning("save start");
-		foreach (var score in Scores) {
-			GD.PushWarning($"key {score.Key} score={score.Value}");
-		}
-		GD.PushWarning(Scores.Count);
-		foreach (var score in ScoresStr) {
-			GD.Print($"key {score.Key} score={score.Value}");
-		}
-		GD.PushWarning("save end");
-		GD.PushWarning(ScoresStr.Count);
+	public void Save(player Player) {
 		ScoresStr.Clear();
 
 		foreach (KeyValuePair<GameMode, TimeSpan> score in Scores) {
 			ScoresStr.Add(score.Key.ToString(), score.Value);
 		}
+		X = Player.Position.X;
+		Y = Player.Position.Y;
+		Z = Player.Position.Z;
 	}
-	public void Load() {
-		// IDictionary<string, TimeSpan> data = new Dictionary<string, TimeSpan>();
-		GD.PushWarning("Load start");
-		foreach (var score in Scores) {
-			GD.PushWarning($"key {score.Key} score={score.Value}");
-		}
-		GD.PushWarning(Scores.Count);
-		foreach (var score in ScoresStr) {
-			GD.PushWarning($"key {score.Key} score={score.Value}");
-		}
-		GD.PushWarning(ScoresStr.Count);
-		GD.PushWarning("Load end");
+	public void Load(player Player) {
 		Scores.Clear();
 		foreach (KeyValuePair<string, TimeSpan> score in ScoresStr) {
 			Scores.Add(new GameMode(score.Key), score.Value);
 		}
+		Player.Position = new Vector3(X, Y, Z);
+	}
+	public void SetPos(player Player) {
+		X = Player.Position.X;
+		Y = Player.Position.Y;
+		Z = Player.Position.Z;
 	}
 }
