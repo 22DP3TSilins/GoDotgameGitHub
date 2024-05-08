@@ -16,6 +16,7 @@ public partial class ScoreBoard : CanvasLayer
 	Login login = null;
 	GameMode currentGameMode;
 	ScoreForPlayer[] leaderBoard = new ScoreForPlayer[4];
+	CanvasLayer map = null;
 	public override void _Ready()
 	{
 		string jsonData = File.ReadAllText("Data/Scores.json");
@@ -27,7 +28,8 @@ public partial class ScoreBoard : CanvasLayer
 		login = GetNode<Login>("../Login/Control");
 		ui = GetNode<UI>("../UI/Control");
 		uiGenRndMaze = ui.GetNode<CheckButton>("Panel/Control/HBoxContainer/Maze generation/MazeGeneration/VBoxContainer/HBoxContainer/CheckButton");
-		
+		map = GetNode<CanvasLayer>("../Map");
+
 		for (int i = 0; i < 4; i++) {
 			leaderBoard[i] = GetNode("Control/VBoxContainer").GetChild<ScoreForPlayer>(i+1);
 		}
@@ -90,10 +92,11 @@ public partial class ScoreBoard : CanvasLayer
 	// public void AddUserScore(string usernameHash) {
 	// 	users.Add(usernameHash, new UserData());
 	// }
-	public void SetCurrentUser(string usernameHash, bool newUser) {
+	public void SetCurrentUser(string usernameHash, bool newUser, bool admin) {
 		user?.Stop();
 		ui.SaveSettings(user);
-		if (newUser) users.Add(usernameHash, new UserData(login.GetUsernameFromHash(usernameHash)));
+		map.Visible = admin;
+		if (newUser) users.Add(usernameHash, new UserData(login.GetUsernameFromHash(usernameHash), admin));
 		user = users[usernameHash];
 		Player.Started = false;
 		ui._gen_maze(false, user.Finished || newUser);

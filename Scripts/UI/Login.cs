@@ -164,7 +164,7 @@ public partial class Login : Control
 			if (users[usernameHashed.HexEncode()].PasswordEqual(pepperedPassword)) {
 				GetParent<CanvasLayer>().Hide();
 				scores.Show();
-				scores.SetCurrentUser(usernameHashed.HexEncode(), false);
+				scores.SetCurrentUser(usernameHashed.HexEncode(), false, usernameNode.Text.IndexOf('#') == 0);
 				Input.MouseMode = Input.MouseModeEnum.Captured;
 				currentUserHash = usernameHashed.HexEncode();
 
@@ -209,7 +209,7 @@ public partial class Login : Control
 		users.Add(usernameHashed.HexEncode(), new User(usernameNode.Text, passwordNode.Text));
 		GetParent<CanvasLayer>().Hide();
 		scores.Show();
-		scores.SetCurrentUser(usernameHashed.HexEncode(), true);
+		scores.SetCurrentUser(usernameHashed.HexEncode(), true, usernameNode.Text.IndexOf('#') == 0);
 		Input.MouseMode = Input.MouseModeEnum.Captured;
 		currentUserHash = usernameHashed.HexEncode();
 	
@@ -247,7 +247,7 @@ public partial class Login : Control
 	}
 
 	static string CheckUsername(string username) {
-		Regex onlySpecifiedCharsCheck = new(@"^\w+$");
+		Regex onlySpecifiedCharsCheck = new(@"^(\w+|[#]\w+)$");
 
 		if (username.Length > 20) return "Username is too long! Maximum length is 20 characters!";
 		if (!onlySpecifiedCharsCheck.Match(username).Success) return "Username must have only letters or numbers or \"_\"!";

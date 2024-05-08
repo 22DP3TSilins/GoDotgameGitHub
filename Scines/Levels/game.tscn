@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://crwoedlavaj88"]
+[gd_scene load_steps=16 format=3 uid="uid://crwoedlavaj88"]
 
 [ext_resource type="Script" path="res://Scripts/Maze/MazeAlgoritm.cs" id="1_ifcgi"]
 [ext_resource type="PackedScene" uid="uid://bwox0pt6e740q" path="res://Scines/Player/player.tscn" id="1_m18n4"]
@@ -30,11 +30,14 @@ shader_parameter/noise = SubResource("NoiseTexture2D_uod8q")
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_tkfys"]
 material = SubResource("ShaderMaterial_u85dc")
-size = Vector2(60, 60)
+size = Vector2(70, 70)
 center_offset = Vector3(0, -2.5, 0)
 
-[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_dvr5e"]
-data = PackedVector3Array(30, -2.5, 30, -30, -2.5, 30, 30, -2.5, -30, -30, -2.5, 30, -30, -2.5, -30, 30, -2.5, -30)
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_n6jbk"]
+data = PackedVector3Array(35, -2.5, 35, -35, -2.5, 35, 35, -2.5, -35, -35, -2.5, 35, -35, -2.5, -35, 35, -2.5, -35)
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_x65js"]
+viewport_path = NodePath("SubViewport")
 
 [node name="Node3D" type="Node3D"]
 
@@ -53,13 +56,13 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.97865, 2.23039)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9807, -2.64256, 0.402968)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="MazeWalls"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30, 0, 30)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 34.1584, 0, 31.7993)
 mesh = SubResource("PlaneMesh_tkfys")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="MazeWalls/MeshInstance3D"]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="MazeWalls/MeshInstance3D/StaticBody3D"]
-shape = SubResource("ConcavePolygonShape3D_dvr5e")
+shape = SubResource("ConcavePolygonShape3D_n6jbk")
 
 [node name="Finish" parent="MazeWalls" instance=ExtResource("6_1gojo")]
 
@@ -77,3 +80,52 @@ visible = false
 
 [node name="Login" parent="." instance=ExtResource("10_ogbga")]
 visible = false
+
+[node name="Map" type="CanvasLayer" parent="."]
+
+[node name="Control" type="Control" parent="Map"]
+layout_mode = 3
+anchor_left = 0.72
+anchor_right = 1.003
+anchor_bottom = 0.59
+offset_left = 0.559937
+offset_right = -0.456055
+offset_bottom = -0.320007
+
+[node name="Panel" type="Panel" parent="Map/Control"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.996
+anchor_top = 0.003
+anchor_right = 0.996
+anchor_bottom = 0.003
+offset_left = -327.38
+offset_top = 0.062
+offset_right = -0.380005
+offset_bottom = 388.062
+grow_horizontal = 0
+
+[node name="Label" type="Label" parent="Map/Control/Panel"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -283.0
+offset_top = 13.0
+offset_right = -37.0
+offset_bottom = 53.0
+grow_horizontal = 0
+theme_override_font_sizes/font_size = 29
+text = "Map"
+horizontal_alignment = 1
+
+[node name="Sprite2D" type="Sprite2D" parent="Map/Control/Panel/Label"]
+position = Vector2(121, 210)
+scale = Vector2(0.576172, 0.576172)
+texture = SubResource("ViewportTexture_x65js")
+
+[node name="SubViewport" type="SubViewport" parent="."]
+
+[node name="Camera3D" type="Camera3D" parent="SubViewport"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 34.158, 48.923, 31.799)
+fov = 74.8

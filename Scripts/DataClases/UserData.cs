@@ -14,6 +14,8 @@ public class UserData {
 	public float X {get; set;}
 	public float Y {get; set;}
 	public float Z {get; set;}
+
+	public bool Admin {get; set;}
 	// public GameMode currentGameMode = new();
 	// public string CurrentGameMode {
 	// get {
@@ -22,6 +24,8 @@ public class UserData {
 	// 	currentGameMode = new GameMode(value);
 	// }}
 	public void Finish(GameMode gameMode) {
+		if (Admin) return;
+
 		Finished = true;
 		TimeFinished = DateTime.Now - Start;
 		Stop();
@@ -61,7 +65,7 @@ public class UserData {
 	// 	Scores[(difficulty, seed)] = time < Scores[(difficulty, seed)] ? time : Scores[(difficulty, seed)];
 	// }
 
-	public UserData(string username){
+	public UserData(string username, bool admin){
 		Scores = new Dictionary<GameMode, TimeSpan>();
 		Username = username;
 		// foreach (var gameModeScore in ScoresStr) {
@@ -79,6 +83,7 @@ public class UserData {
 			{"mazeSeed", 0.0},
 			{"randMaze", 1.0}
 		};
+		Admin = admin;
 		// X = Player.Position.X;
 		// Y = Player.Position.Y;
 		// Z = Player.Position.Z;
