@@ -11,11 +11,13 @@ public partial class MazeAlgoritm : Node3D
 	List<Node3D> wallMeshes = new List<Node3D>();
 	Finish finish = null;
 	player Player = null;
+	ScoreBoard scoreBoard = null;
 	public override void _Ready()
 	{
 		meshes = GetNode<Node3D>("../MazeWalls");
 		finish = meshes.GetNode<Finish>("Finish");
 		Player = GetNode<player>("../Player");
+		scoreBoard = GetNode<ScoreBoard>("../Player");
 		genMaze(8, false);
 		// byte[,] walls = genMazeWalls();
 		// AssyncLoadMaze(walls);
@@ -33,20 +35,18 @@ public partial class MazeAlgoritm : Node3D
 	public override void _Process(double delta)
 	{
 	}
-	const float spacing = 4.0f;
+	const float SPACING = 4.0f;
 	public void SetPlayerLocation(int size, int seed = -1){
 		Random rnd;
-		if (seed == -1) {
-			rnd = new Random();
-		} else {
-			rnd = new Random(seed);
-		}
-		Vector3 newPlayerPos = new(spacing + 1.5f, -4.24f, spacing + 0.5f);
+		seed = seed == -1 ? new Random().Next() : seed;
+		rnd = new Random(seed);
+		
+		Vector3 newPlayerPos = new(SPACING + 1.5f, -4.24f, SPACING + 0.5f);
 
 		if (rnd.Next() < int.MaxValue / 2) {
-			newPlayerPos += new Vector3(rnd.Next(0, size - 1), 0.0f, 0.0f) * spacing;
+			newPlayerPos += new Vector3(rnd.Next(0, size - 1), 0.0f, 0.0f) * SPACING;
 		} else {
-			newPlayerPos += new Vector3(0.0f, 0.0f, rnd.Next(0, size - 1)) * spacing;
+			newPlayerPos += new Vector3(0.0f, 0.0f, rnd.Next(0, size - 1)) * SPACING;
 		}
 		Player.Position = newPlayerPos;
 	}
@@ -83,14 +83,14 @@ public partial class MazeAlgoritm : Node3D
 					testScene = (PackedScene)ResourceLoader.LoadThreadedGet("res://Scines/Levels/wallz.tscn");
 					Node3D testMesh = (Node3D)testScene.Instantiate();
 					meshes.AddChild(testMesh);
-					testMesh.Position = new Vector3(0.0f + i * spacing, floor, 0.0f + j * spacing);
+					testMesh.Position = new Vector3(0.0f + i * SPACING, floor, 0.0f + j * SPACING);
 					wallMeshes.Add(testMesh);
 				}
 				if ((walls[i][j] & (byte)Wall.Left) == 0 && (i != sizex + 1)) {
 					testScene = (PackedScene)ResourceLoader.LoadThreadedGet("res://Scines/Levels/wallx.tscn");
 					Node3D testMesh = (Node3D)testScene.Instantiate();
 					meshes.AddChild(testMesh);
-					testMesh.Position = new Vector3(2.0f + i * spacing, floor, 2.0f + j * spacing);
+					testMesh.Position = new Vector3(2.0f + i * SPACING, floor, 2.0f + j * SPACING);
 					wallMeshes.Add(testMesh);
 				}
 			}
@@ -106,7 +106,7 @@ public partial class MazeAlgoritm : Node3D
 				testScene = (PackedScene)ResourceLoader.LoadThreadedGet("res://Scines/Levels/WallCorner.tscn");
 				Node3D testMesh = (Node3D)testScene.Instantiate();
 				meshes.AddChild(testMesh);
-				testMesh.Position = new Vector3(4.0f + i * spacing, 0.0f, 2.0f + j * spacing);
+				testMesh.Position = new Vector3(4.0f + i * SPACING, 0.0f, 2.0f + j * SPACING);
 				wallMeshes.Add(testMesh);
 			}
 		}
@@ -127,7 +127,7 @@ public partial class MazeAlgoritm : Node3D
 		int currentx = startx;
 		int currenty = starty;
 
-		finish.Position = new Vector3(2.0f + startx * spacing, 0.0f, 0.0f + starty * spacing);
+		finish.Position = new Vector3(2.0f + startx * SPACING, 0.0f, 0.0f + starty * SPACING);
 
 		// byte[,] walls = new byte[sizex + 2, sizey + 2]; // 1 Up 2 Left 4 Visited 8 Explored compleatly 16 Up maze wall 32 Left maze wall;
 		// List<byte> a = new List<byte>()

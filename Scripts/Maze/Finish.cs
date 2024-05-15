@@ -8,7 +8,10 @@ public partial class Finish : Node3D
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
+		// Ieslēdz pārbaudi vai kāds objekts pieskaras vai ne
 		GetNode<Area3D>("Mesh/Area3D").Monitoring = true;
+
+		// Iegūst mezglus
 		scoreBoard = GetNode<ScoreBoard>("../../Scores");
 		audioStreamPlayer = GetNode<AudioStreamPlayer>("Mesh/AudioStreamPlayer");
 	}

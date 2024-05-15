@@ -23,7 +23,7 @@ public partial class ScoreBoard : CanvasLayer
 		users = JsonSerializer.Deserialize<IDictionary<string, UserData>>(jsonData);
 		
 		Player = GetNode<player>("../Player");
-		foreach (var userForEach in users) userForEach.Value.Load(Player);
+		foreach (var userForEach in users) userForEach.Value.Load();
 		GetNode<CanvasLayer>("../Login").Show();
 		login = GetNode<Login>("../Login/Control");
 		ui = GetNode<UI>("../UI/Control");
@@ -39,75 +39,60 @@ public partial class ScoreBoard : CanvasLayer
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta)
 	{
-			IDictionary<string, TimeSpan> allScores = new Dictionary<string, TimeSpan>();
-			int i2 = 0;
-			// GD.Print("ForEach start:");
-			foreach (KeyValuePair<string, UserData> userForEach in users) {
-				TimeSpan userScore = userForEach.Value.GetBestTime(currentGameMode);
-				
-				if (userScore != TimeSpan.Zero) {
-					allScores.Add(userForEach.Value.Username, userScore);
-					// GD.Print($"i: {i} {i2} ss:");
-
-				} else {
-					// GD.Print($"i: {i} {i2} f:");
-				}
-			}
-			// GD.Print("ForEach end:\n");
-
-			var sorted = allScores.OrderBy(key => key.Value).ThenBy(key => key.Key);
+		IDictionary<string, TimeSpan> allScores = new Dictionary<string, TimeSpan>();
+		// GD.Print("ForEach start:");
+		foreach (KeyValuePair<string, UserData> userForEach in users) {
+			TimeSpan userScore = userForEach.Value.GetBestTime(currentGameMode);
 			
-			int IofUser = -1;
-			int i = 0;
-			if (!(user == null)) {
-				foreach (var userForEach in sorted) {
-					if (string.Compare(userForEach.Key, user.Username) == 0) IofUser = i;
-					i++;
-				}
+			if (userScore != TimeSpan.Zero) {
+				allScores.Add(userForEach.Value.Username, userScore);
+				// GD.Print($"i: {i} {i2} ss:");
+
+			} else {
+				// GD.Print($"i: {i} {i2} f:");
 			}
+		}
+		// GD.Print("ForEach end:\n");
 
-			for (i = 0; i < 3; i++) leaderBoard[i].ClearScore();
-
-			i = 0;
-			foreach (var playerScore in sorted) {
-				if (i > 3) break;
-				leaderBoard[i].SetScore(i + 1, playerScore.Key, playerScore.Value);
+		var sorted = allScores.OrderBy(key => key.Value).ThenBy(key => key.Key);
+		
+		int IofUser = -1;
+		int i = 0;
+		if (!(user == null)) {
+			foreach (var userForEach in sorted) {
+				if (string.Compare(userForEach.Key, user.Username) == 0) IofUser = i;
 				i++;
 			}
+		}
+
+		for (i = 0; i < 3; i++) leaderBoard[i].ClearScore();
+
+		i = 0;
+		foreach (var playerScore in sorted) {
+			if (i > 3) break;
+			leaderBoard[i].SetScore(i + 1, playerScore.Key, playerScore.Value);
+			i++;
+		}
+		
+		if (user != null) {
 			
-			if (user != null) {
-				
-				leaderBoard[3].SetScore(IofUser == -1 ? sorted.Count() + 1 : IofUser + 1, user.Username, user.GetTime);
-			}
-
-		// } else {
-		// 	user?.Finish(currentGameMode);
-		// }
-		// if (user != null) {
-		// 	TimeSpan pagajusaisLaiks = DateTime.Now - user.Start;
-		// 	string text = string.Format("{0:0.000}", pagajusaisLaiks.TotalSeconds);
-		// }
-
+			leaderBoard[3].SetScore(IofUser == -1 ? sorted.Count() + 1 : IofUser + 1, user.Username, user.GetTime);
+		}
 	}
-	// public void AddUserScore(string usernameHash) {
-	// 	users.Add(usernameHash, new UserData());
-	// }
 	public void SetCurrentUser(string usernameHash, bool newUser, bool admin) {
 		user?.Stop();
 		ui.SaveSettings(user);
+		user?.Save(Player);
 		map.Visible = admin;
 		if (newUser) users.Add(usernameHash, new UserData(login.GetUsernameFromHash(usernameHash), admin));
 		user = users[usernameHash];
+		user.Load();
+		ui.LoadSettings(user);
 		Player.Started = false;
 		ui._gen_maze(false, user.Finished || newUser);
 		user.Finished = false;
-		user.SetPos(Player);
-		// user.RestartTime();
-		user.Load(Player);
-		ui.LoadSettings(user);
-		SetGameMode();
+		user.GoTo(Player);
 		Player.Started = false;
-		// user.ContinueTime();
 	}
 	public void SetGameMode() {
 		currentGameMode = uiGenRndMaze.ButtonPressed ? new() : new((int)ui.difficultyInput.Value, (int)ui.mazeSeed.Value);
@@ -115,6 +100,7 @@ public partial class ScoreBoard : CanvasLayer
 
 	public override void _Notification(int what)
 	{
+		// Saglabā lietotāju datus pirms iziešanas no programmas
 		if (what == NotificationWMCloseRequest) {
 			Stop();
 			user?.Save(Player);

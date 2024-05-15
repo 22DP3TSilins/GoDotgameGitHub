@@ -24,6 +24,7 @@ public partial class UI : Control
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
+		// Iegūst mezglus
 		player1 = GetParent().GetParent().GetNode<player>("Player");
 		player1Camera = player1.GetNode<Camera3D>("CameraRig/RotY/Camera");
 		mazeSeed = GetNode<SpinBox>("Panel/Control/HBoxContainer/Maze generation/MazeGeneration/Seed/Input");
@@ -38,6 +39,7 @@ public partial class UI : Control
 		yesNo = GetNode<YesNo>("../../YesNo");
 		login = GetNode<Login>("../../Login/Control");
 
+		// Iedod vērtības mainīgajiem ar objektiem
 		Settings = new Dictionary<string, Slider>(){
 			{"Difficulty", difficultyInput},
 			{"FOV", fov},
@@ -57,24 +59,24 @@ public partial class UI : Control
 	
 	private void _fov_changed(double value)
 	{
-		// Replace with function body.
+		// Nomaina FOV
 		player1Camera.Fov = (float)value;
 
 	}
 	private void _camera_dist_changed(double value)
 	{
-		// Replace with function body.
+		// Nomaina Maximālo kameras attālumu no spēlētāja
 		
 		player1.MaxCameraDistance = (float)value;
 	}
 	private void _ofset_changed(double value)
 	{
-		// Replace with function body.
+		// Nomaina nobīdi
 		player1.CameraOfset = (float)value;
 	}
 	public void _gen_maze()
 	{
-		// Replace with function body.
+		// Ģenerē labirintu
 		if (genRndMaze.ButtonPressed) {
 			mazeAlgoritm.genMaze((int)difficultyInput.Value, true);
 
@@ -82,6 +84,7 @@ public partial class UI : Control
 			mazeAlgoritm.genMaze((int)difficultyInput.Value, true, (int)mazeSeed.Value);
 		}
 
+		// Saglabā iestatījumus un restartē laiku
 		scoreBoard.RestartTime();
 		scoreBoard.SetGameMode();
 		SaveSettings(scoreBoard.user);
@@ -89,7 +92,7 @@ public partial class UI : Control
 	}
 	public void _gen_maze(bool RestartTime, bool resetLocation)
 	{
-		// Replace with function body.
+		// Ģenerē labirintu
 		if (genRndMaze.ButtonPressed) {
 			mazeAlgoritm.genMaze((int)difficultyInput.Value, true, -1, resetLocation);
 
@@ -97,6 +100,7 @@ public partial class UI : Control
 			mazeAlgoritm.genMaze((int)difficultyInput.Value, true, (int)mazeSeed.Value, resetLocation);
 		}
 
+		// Saglabā iestatījumus un restartē laiku
 		if (RestartTime) scoreBoard.RestartTime();
 		scoreBoard.SetGameMode();
 		SaveSettings(scoreBoard.user);
@@ -104,7 +108,7 @@ public partial class UI : Control
 	}
 	private void _difficulty_changed(double value)
 	{
-		// Replace with function body.
+		// Izvēlas grūtības pakāpi
 		if (value == 15.0) {
 			difficultyLabel.Text = "Difficulty: expert";
 		} else if (value > 11.0) {
@@ -116,16 +120,11 @@ public partial class UI : Control
 		}
 	}
 
-	IDictionary<string, Slider> Settings = new Dictionary<string, Slider>(){
-		{"Difficulty", null},
-		{"FOV", null},
-		{"cameraMaxDistance", null},
-		{"cameraOfset", null}
-	};
+	IDictionary<string, Slider> Settings = new Dictionary<string, Slider>();
 	public IDictionary<string, (Action Func, string Msg)> YesNoFunc;
 	public void LoadSettings(UserData user) {
+		// Ielādē iestatījumus, ja spēlētājs nav null
 		if (user == null) return;
-		
 		foreach (var keyValuePair in Settings) {
 			keyValuePair.Value.Value = user.Settings[keyValuePair.Key];
 		}
@@ -134,6 +133,7 @@ public partial class UI : Control
 		genRndMaze.ButtonPressed = user.Settings["randMaze"] != 0.0;
 	}
 	public void SaveSettings(UserData user) {
+		// Saglabā iestatījumus, ja spēlētājs nav null
 		if (user == null) return;
 
 		foreach (var keyValuePair in Settings) {
@@ -147,7 +147,6 @@ public partial class UI : Control
 	{
 		yesNo.AskYesNo("log_out");
 		GetParent<CanvasLayer>().Visible = false;
-		// Replace with function body.
 	}
 	private void LogOutYN()
 	{

@@ -2,7 +2,10 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-
+// Klase, kas saglabā datus par lietotāju (iestatījumus, pozīciju, rezultātus)
+// Klasē īpašumus izmantoju mainīgajiem, kurus vajag saglabāt JSON failā, 
+// vai papildu funkcionalitāti vērtību iegūšanai un saglabāšanai mainīgajos
+// laukus izmantoju aprēķiniem klasē
 public class UserData {
 	public IDictionary<GameMode, TimeSpan> Scores = new Dictionary<GameMode, TimeSpan>();
 	public IDictionary<string, TimeSpan> ScoresStr { get; set; }
@@ -14,15 +17,8 @@ public class UserData {
 	public float X {get; set;}
 	public float Y {get; set;}
 	public float Z {get; set;}
-
 	public bool Admin {get; set;}
-	// public GameMode currentGameMode = new();
-	// public string CurrentGameMode {
-	// get {
-	// 	return currentGameMode.ToString();
-	// } set {
-	// 	currentGameMode = new GameMode(value);
-	// }}
+	// Saglabā laiku
 	public void Finish(GameMode gameMode) {
 		if (Admin) return;
 
@@ -36,45 +32,38 @@ public class UserData {
 		}
 	}
 	public bool Finished {get; set;} = false;
+	// Uzliek pauzi
 	public void Stop(){
 		if (!WasJustStopped) StopTime = DateTime.Now;
 		WasJustStopped = true;
 	}
+	// Turpinaskaitīt laiku pēc pauzes
 	public void ContinueTime() {
 		if (WasJustStopped && !Finished) Start += DateTime.Now - StopTime;
 		WasJustStopped = false;
 	}
-	public TimeSpan GetTime { get { 
-		if (Finished) return TimeFinished;
-		return DateTime.Now - (Start + (WasJustStopped ? DateTime.Now - StopTime : TimeSpan.Zero)); } }
+	// Pašreizējais laiks
+	public TimeSpan GetTime { 
+		get { 
+			if (Finished) return TimeFinished;
+			return DateTime.Now - (Start + (WasJustStopped ? DateTime.Now - StopTime : TimeSpan.Zero));
+		}
+	}
+	// Atgriež labāko laiku tajā spēles režīmā
 	public TimeSpan GetBestTime(GameMode gameMode) {
-		// foreach (var score in Scores) {
-		// 	GD.Print($"key {score.Key} score={score.Value}");
-		// }
-		// GD.Print(Scores.Count);
-
 		return Scores.ContainsKey(gameMode) ? Scores[gameMode] : TimeSpan.Zero;
 	}
 
 	public DateTime StopTime {get; set;}
 
-	// public void UpdateScores(TimeSpan time) {
-	// 	FastestTimeRandSeed = time < FastestTimeRandSeed ? time : FastestTimeRandSeed;
-	// }
-	// public void UpdateScores(TimeSpan time, (int difficulty, int seed) {
-	// 	Scores[(difficulty, seed)] = time < Scores[(difficulty, seed)] ? time : Scores[(difficulty, seed)];
-	// }
-
+	// Izveido usera datus
 	public UserData(string username, bool admin){
+		Admin = admin;
 		Scores = new Dictionary<GameMode, TimeSpan>();
 		Username = username;
-		// foreach (var gameModeScore in ScoresStr) {
-		// 	string[] mode = gameModeScore.Key.Split(':');
-		// 	int difficulty = int.Parse(mode[0]);
-		// 	int seed = int.Parse(mode[1]);
-		// 	ScoresStr.Add(new GameMode(difficulty,seed).ToString(), gameModeScore.Value);
-		// }
 		ScoresStr = new Dictionary<string, TimeSpan>();
+
+		// Defaulta iestatījumi
 		Settings = new Dictionary<string, double>{
 			{"Difficulty", 0.0},
 			{"FOV", 90.0},
@@ -83,37 +72,38 @@ public class UserData {
 			{"mazeSeed", 0.0},
 			{"randMaze", 1.0}
 		};
-		Admin = admin;
-		// X = Player.Position.X;
-		// Y = Player.Position.Y;
-		// Z = Player.Position.Z;
 	}
+	// Sāk laiku skaitīt no nulles
 	public void RestartTime() {
 		Start = DateTime.Now;
 		Finished = false;
 		WasJustStopped = false;
 	}
-
+	// Saglabā objektā pabeigšanas laikus
 	public void Save(player Player) {
 		ScoresStr.Clear();
 
 		foreach (KeyValuePair<GameMode, TimeSpan> score in Scores) {
 			ScoresStr.Add(score.Key.ToString(), score.Value);
 		}
-		X = Player.Position.X;
-		Y = Player.Position.Y;
-		Z = Player.Position.Z;
+		SetPos(Player);
 	}
-	public void Load(player Player) {
+	// Ielādē objektā pabeigšanas laikus
+	public void Load() {
 		Scores.Clear();
 		foreach (KeyValuePair<string, TimeSpan> score in ScoresStr) {
 			Scores.Add(new GameMode(score.Key), score.Value);
 		}
-		Player.Position = new Vector3(X, Y, Z);
+		// Player.Position = new Vector3(X, Y, Z);
 	}
+	// Saglabā spēlētāja pozīciju
 	public void SetPos(player Player) {
 		X = Player.Position.X;
 		Y = Player.Position.Y;
 		Z = Player.Position.Z;
+	}
+
+	public void GoTo(player Player) {
+		Player.Position = new Vector3(X, Y, Z);
 	}
 }
