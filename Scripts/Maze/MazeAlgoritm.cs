@@ -12,13 +12,15 @@ public partial class MazeAlgoritm : Node3D
 	Finish finish = null;
 	player Player = null;
 	ScoreBoard scoreBoard = null;
+	UI ui = null;
 	public override void _Ready()
 	{
 		meshes = GetNode<Node3D>("../MazeWalls");
 		finish = meshes.GetNode<Finish>("Finish");
 		Player = GetNode<player>("../Player");
-		scoreBoard = GetNode<ScoreBoard>("../Player");
-		genMaze(8, false);
+		scoreBoard = GetNode<ScoreBoard>("../Scores");
+		ui = GetNode<UI>("../UI/Control");
+		genMaze((int)UserData.DefaultSettings["Difficulty"], false);
 		// byte[,] walls = genMazeWalls();
 		// AssyncLoadMaze(walls);
 		// await Task.Run(() => genMaze());
@@ -26,6 +28,11 @@ public partial class MazeAlgoritm : Node3D
 	}
 
 	public void genMaze(int size, bool newMaze, int seed = -1, bool setLocation = true) {
+
+		seed = seed == -1 ? new Random().Next() : seed;
+		if (scoreBoard == null) GD.Print("\naaa\naaa\naaa\naaa\naaa");
+		if (scoreBoard.user != null) scoreBoard.user.CurrentGameMode = new GameMode(size, seed, ui.genRndMaze.ButtonPressed);
+		
 		if (setLocation) SetPlayerLocation(size, seed);
 		List<List<byte>> walls = genMazeWalls(size, seed);
 		AssyncLoadMaze(size, walls, newMaze);
@@ -42,7 +49,9 @@ public partial class MazeAlgoritm : Node3D
 		rnd = new Random(seed);
 		
 		Vector3 newPlayerPos = new(SPACING + 1.5f, -4.24f, SPACING + 0.5f);
+		// Vector3 newPlayerPos = new(SPACING + 3.5f, -4.24f, SPACING + 3.5f);
 
+		GD.Print($"Min: {size}");
 		if (rnd.Next() < int.MaxValue / 2) {
 			newPlayerPos += new Vector3(rnd.Next(0, size - 1), 0.0f, 0.0f) * SPACING;
 		} else {

@@ -33,7 +33,6 @@ public partial class ScoreBoard : CanvasLayer
 		for (int i = 0; i < 4; i++) {
 			leaderBoard[i] = GetNode("Control/VBoxContainer").GetChild<ScoreForPlayer>(i+1);
 		}
-		SetGameMode();
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -42,7 +41,7 @@ public partial class ScoreBoard : CanvasLayer
 		IDictionary<string, TimeSpan> allScores = new Dictionary<string, TimeSpan>();
 		// GD.Print("ForEach start:");
 		foreach (KeyValuePair<string, UserData> userForEach in users) {
-			TimeSpan userScore = userForEach.Value.GetBestTime(currentGameMode);
+			TimeSpan userScore = userForEach.Value.GetBestTime(user?.CurrentGameMode);
 			
 			if (userScore != TimeSpan.Zero) {
 				allScores.Add(userForEach.Value.Username, userScore);
@@ -89,14 +88,15 @@ public partial class ScoreBoard : CanvasLayer
 		user.Load();
 		ui.LoadSettings(user);
 		Player.Started = false;
+		user.GoTo(Player);
 		ui._gen_maze(false, user.Finished || newUser);
 		user.Finished = false;
-		user.GoTo(Player);
-		Player.Started = false;
+		
+		// Player.Started = false;
 	}
-	public void SetGameMode() {
-		currentGameMode = uiGenRndMaze.ButtonPressed ? new() : new((int)ui.difficultyInput.Value, (int)ui.mazeSeed.Value);
-	}
+	// public void SetGameMode() {
+	// 	currentGameMode = uiGenRndMaze.ButtonPressed ? new() : new((int)ui.difficultyInput.Value, (int)ui.mazeSeed.Value);
+	// }
 
 	public override void _Notification(int what)
 	{
@@ -115,7 +115,7 @@ public partial class ScoreBoard : CanvasLayer
 	}
 	public void Finish() {
 		Player.Started = false;
-		user?.Finish(currentGameMode);
+		user?.Finish();
 	}
 	public void Stop() {
 		user?.Stop();

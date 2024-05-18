@@ -86,23 +86,22 @@ public partial class UI : Control
 
 		// Saglabā iestatījumus un restartē laiku
 		scoreBoard.RestartTime();
-		scoreBoard.SetGameMode();
+		// scoreBoard.SetGameMode();
 		SaveSettings(scoreBoard.user);
 		player1.Started = false;
 	}
-	public void _gen_maze(bool RestartTime, bool resetLocation)
-	{
-		// Ģenerē labirintu
-		if (genRndMaze.ButtonPressed) {
-			mazeAlgoritm.genMaze((int)difficultyInput.Value, true, -1, resetLocation);
+	public void _gen_maze(bool RestartTime, bool resetLocation) {
 
-		} else {
-			mazeAlgoritm.genMaze((int)difficultyInput.Value, true, (int)mazeSeed.Value, resetLocation);
-		}
+		// Ģenerē labirintu
+		mazeAlgoritm.genMaze(
+			(int)difficultyInput.Value, 
+			true, 
+			genRndMaze.ButtonPressed ? scoreBoard.user.CurrentGameMode.Seed : (int)mazeSeed.Value, 
+			resetLocation);
 
 		// Saglabā iestatījumus un restartē laiku
 		if (RestartTime) scoreBoard.RestartTime();
-		scoreBoard.SetGameMode();
+		// scoreBoard.SetGameMode();
 		SaveSettings(scoreBoard.user);
 		player1.Started = false;
 	}
