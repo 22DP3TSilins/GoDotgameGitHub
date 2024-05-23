@@ -87,8 +87,9 @@ public partial class UI : Control
 		// Saglabā iestatījumus un restartē laiku
 		scoreBoard.RestartTime();
 		// scoreBoard.SetGameMode();
-		SaveSettings(scoreBoard.user);
+		SaveSettings();
 		player1.Started = false;
+		scoreBoard.ResetScoreBoard();
 	}
 	public void _gen_maze(bool RestartTime, bool resetLocation) {
 
@@ -102,8 +103,9 @@ public partial class UI : Control
 		// Saglabā iestatījumus un restartē laiku
 		if (RestartTime) scoreBoard.RestartTime();
 		// scoreBoard.SetGameMode();
-		SaveSettings(scoreBoard.user);
+		SaveSettings();
 		player1.Started = false;
+		scoreBoard.ResetScoreBoard();
 	}
 	private void _difficulty_changed(double value)
 	{
@@ -121,26 +123,31 @@ public partial class UI : Control
 
 	IDictionary<string, Slider> Settings = new Dictionary<string, Slider>();
 	public IDictionary<string, (Action Func, string Msg)> YesNoFunc;
-	public void LoadSettings(UserData user) {
+	public void LoadSettings() {
 		// Ielādē iestatījumus, ja spēlētājs nav null
-		if (user == null) return;
+		if (scoreBoard.user == null) return;
+
+		// Ielādē slaideru vērtības
 		foreach (var keyValuePair in Settings) {
-			keyValuePair.Value.Value = user.Settings[keyValuePair.Key];
+			keyValuePair.Value.Value = scoreBoard.user.Settings[keyValuePair.Key];
 		}
 
-		mazeSeed.Value = user.Settings["mazeSeed"];
-		genRndMaze.ButtonPressed = user.Settings["randMaze"] != 0.0;
+		// Ielādē pārējās vērtības
+		mazeSeed.Value = scoreBoard.user.Settings["mazeSeed"];
+		genRndMaze.ButtonPressed = scoreBoard.user.Settings["randMaze"] != 0.0;
 	}
-	public void SaveSettings(UserData user) {
+	public void SaveSettings() {
 		// Saglabā iestatījumus, ja spēlētājs nav null
-		if (user == null) return;
+		if (scoreBoard.user == null) return;
 
+		// Saglabā slaideru vērtības
 		foreach (var keyValuePair in Settings) {
-			user.Settings[keyValuePair.Key] = keyValuePair.Value.Value;
+			scoreBoard.user.Settings[keyValuePair.Key] = keyValuePair.Value.Value;
 		}
 
-		user.Settings["mazeSeed"] = mazeSeed.Value;
-		user.Settings["randMaze"] = genRndMaze.ButtonPressed ? 1.0 : 0.0;
+		// Saglabā pārējās vērtības
+		scoreBoard.user.Settings["mazeSeed"] = mazeSeed.Value;
+		scoreBoard.user.Settings["randMaze"] = genRndMaze.ButtonPressed ? 1.0 : 0.0;
 	}
 	private void LogOut()
 	{
@@ -169,3 +176,6 @@ public partial class UI : Control
 		// Replace with function body.
 	}
 }
+
+
+

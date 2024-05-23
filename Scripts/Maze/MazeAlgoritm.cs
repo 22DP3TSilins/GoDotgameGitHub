@@ -30,7 +30,6 @@ public partial class MazeAlgoritm : Node3D
 	public void genMaze(int size, bool newMaze, int seed = -1, bool setLocation = true) {
 
 		seed = seed == -1 ? new Random().Next() : seed;
-		if (scoreBoard == null) GD.Print("\naaa\naaa\naaa\naaa\naaa");
 		if (scoreBoard.user != null) scoreBoard.user.CurrentGameMode = new GameMode(size, seed, ui.genRndMaze.ButtonPressed);
 		
 		if (setLocation) SetPlayerLocation(size, seed);
@@ -49,9 +48,7 @@ public partial class MazeAlgoritm : Node3D
 		rnd = new Random(seed);
 		
 		Vector3 newPlayerPos = new(SPACING + 1.5f, -4.24f, SPACING + 0.5f);
-		// Vector3 newPlayerPos = new(SPACING + 3.5f, -4.24f, SPACING + 3.5f);
 
-		GD.Print($"Min: {size}");
 		if (rnd.Next() < int.MaxValue / 2) {
 			newPlayerPos += new Vector3(rnd.Next(0, size - 1), 0.0f, 0.0f) * SPACING;
 		} else {

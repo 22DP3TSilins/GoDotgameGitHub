@@ -42,7 +42,6 @@ public partial class player : CharacterBody3D
 	
 	public const float Speed = 5.0f;
 	public const float JumpVelocity = 5.2f;
-	public bool FlyMode = false;
 	float LastJump = 1.0f;
 	public bool Started = false;
 
@@ -64,7 +63,7 @@ public partial class player : CharacterBody3D
 	{
 		// Kad nav UI apstādina laiku
 		if (login.Visible || ui.Visible || yesNo.Visible) {
-			HandleCameraCollision(new Vector2(0.0f, 0.0f));
+			HandleCameraCollision();
 			scoreBoard.Stop();
 			// HandleCameraCollision(new Vector2(0.0f, 0.0f));
 			return;
@@ -107,7 +106,7 @@ public partial class player : CharacterBody3D
 		MoveAndSlide();
 
 		// Tiek galā ar kameras atudri pret citiem objektiem
-		HandleCameraCollision(new Vector2(0.0f, 0.0f));
+		HandleCameraCollision();
 	}
 	
 	public override void _Input(InputEvent e) {
@@ -117,10 +116,15 @@ public partial class player : CharacterBody3D
 			Vector2 motion = -m_event.Relative * mouseSensitivity;
 
 			// Tiek galā ar kameras atudri pret citiem objektiem
-			HandleCameraCollision(motion);
+			HandleCameraCollision();
+
+			// Pagriež spēlētāju attiecīgajā virzienā
+			RotateY(motion.X);
 
 			// Pagriež kameru
 			cameraRotX.RotateX(motion.Y);
+
+			// Pārbauda ar noteiktu precizitāti, lai neietu uz otru pusi, kad skatās tieši uz augšu vai apakšu
 			if (cameraRotX.RotationDegrees.X <= -89.997f) {
 				cameraRotX.RotationDegrees = new Vector3(-90.0f, 0.0f, 0.0f);
 			
@@ -135,15 +139,13 @@ public partial class player : CharacterBody3D
 		// Pārslēdz peles redzamību un iestatījumus, kad "esc" nospiests
 		if (e.IsActionPressed("ui_cancel") && !login.Visible && !yesNo.Visible) {
 			if (Started) scoreBoard.Continue();
-			// StartClock();
 			Input.MouseMode = Input.MouseMode == Input.MouseModeEnum.Captured ? Input.MouseModeEnum.Visible : Input.MouseModeEnum.Captured;
 			ui.Visible = Input.MouseMode == Input.MouseModeEnum.Visible;
 		}
 	}
 
-	void HandleCameraCollision(Vector2 motion){
-		// Pagriež spēlētāju attiecīgajā virzienā
-		RotateY(motion.X);
+	void HandleCameraCollision(){
+		
 
 		// Pārmaina stara virzienu
 		cameraColisionDetector.TargetPosition = new Vector3(CameraOfset, CameraHight, MaxCameraDistance);
@@ -165,5 +167,15 @@ public partial class player : CharacterBody3D
 	void StartClock() {
 		if (!Started) scoreBoard.Continue();
 		Started = true;
+	}
+
+	public void resetSpeedAndDirection() {
+		// Pagriež spēlētāju attiecīgajā virzienā
+		// RotateY(motion.X);
+		// RotationDegrees
+		// Pagriež kameru
+		// cameraRotX.RotateX(motion.Y);
+		Rotation = new Vector3(0, 0, 0);
+		velocity = new Vector3(0, 0, 0);
 	}
 }

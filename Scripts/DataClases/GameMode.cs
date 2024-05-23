@@ -14,13 +14,7 @@ public struct GameMode{
 		Seed = int.Parse(mode[1]);
 	}}
 
-	// Konstruktors kas izveidos gamemode nejaušam labirintam
-	// public GameMode() {
-	// 	Difficulty = -1;
-	// 	Seed = -1;
-	// }
-
-	// Konstruktors, kas izveidos objektu
+	// Konstruktors
 	public GameMode(int difficulty, int seed, bool rand) {
 		Difficulty = difficulty;
 		Seed = seed;
@@ -35,10 +29,6 @@ public struct GameMode{
 		Rand = bool.Parse(modeSplit[2]);
 	}
 
-	// Operātori
-	public static bool operator ==(GameMode gm1, GameMode gm2) => gm1.Equals(gm2);
-	public static bool operator !=(GameMode gm1, GameMode gm2) => !gm1.Equals(gm2);
-
 	// Parveido par simbolu virkni
 	public override string ToString() {
 		return $"{Difficulty}:{Seed}:{Rand}";
@@ -48,7 +38,6 @@ public struct GameMode{
 		// return GetHashCode() == obj.GetHashCode();
 
 		// Pārbauda vai objektu var pārveidot par "GameMode"
-		GD.Print("is oby gm: ", obj is GameMode);
 		if (!(obj is GameMode))
 			return false;
 		
@@ -60,7 +49,7 @@ public struct GameMode{
 			// GD.Print("rand: ")
 			return Difficulty == gm2.Difficulty;
 		}
-		return !(Difficulty == gm2.Difficulty && Seed == gm2.Seed && Rand && gm2.Rand);
+		return Difficulty == gm2.Difficulty && Seed == gm2.Seed && !(Rand || gm2.Rand);
 	}
 
 	// Pārrakstu hash funkciju.

@@ -5,7 +5,7 @@
 [ext_resource type="Shader" path="res://Shaders/Enviorment/Maze_floor/floor2.gdshader" id="5_q0257"]
 [ext_resource type="PackedScene" uid="uid://bbaixijvx3j01" path="res://Scines/Levels/Finsh.tscn" id="6_1gojo"]
 [ext_resource type="PackedScene" uid="uid://0ywhovfe7yw4" path="res://Scines/Levels/ScoreBoard.tscn" id="8_fqjnu"]
-[ext_resource type="PackedScene" uid="uid://dm73q2sansfb5" path="res://Scines/Levels/ui.tscn" id="8_fqwvr"]
+[ext_resource type="PackedScene" uid="uid://dm73q2sansfb5" path="res://Scines/Levels/UI.tscn" id="8_fqwvr"]
 [ext_resource type="PackedScene" uid="uid://dfdebkbn85y7h" path="res://Scines/Levels/YesNo.tscn" id="9_y2i0s"]
 [ext_resource type="PackedScene" uid="uid://b88sp4ogtrhd6" path="res://Scines/Levels/Login.tscn" id="10_ogbga"]
 
@@ -79,7 +79,6 @@ visible = false
 visible = false
 
 [node name="Login" parent="." instance=ExtResource("10_ogbga")]
-visible = false
 
 [node name="Map" type="CanvasLayer" parent="."]
 visible = false

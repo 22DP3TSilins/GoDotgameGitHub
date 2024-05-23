@@ -25,6 +25,7 @@ public partial class Finish : Node3D
 		// Replace with function body.
 		scoreBoard.Finish();
 		audioStreamPlayer.Play();
+		scoreBoard.ResetScoreBoard();
 	}
 }
 

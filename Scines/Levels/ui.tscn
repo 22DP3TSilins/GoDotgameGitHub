@@ -21,8 +21,10 @@ layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_right = 2.0
-offset_bottom = 2.0
+offset_left = 319.0
+offset_top = 153.0
+offset_right = -313.0
+offset_bottom = -160.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_rbncn")
@@ -35,9 +37,9 @@ anchor_top = 0.489
 anchor_right = 0.502
 anchor_bottom = 0.489
 offset_left = -251.0
-offset_top = -137.85
+offset_top = -149.85
 offset_right = 252.692
-offset_bottom = 198.15
+offset_bottom = 186.15
 
 [node name="Control" type="Control" parent="Control/Panel"]
 layout_mode = 1
@@ -45,10 +47,10 @@ anchor_left = -0.64
 anchor_top = -0.613
 anchor_right = 1.613
 anchor_bottom = 1.648
-offset_left = 331.84
-offset_top = 176.092
-offset_right = -312.178
-offset_bottom = -190.032
+offset_left = 332.028
+offset_top = 175.968
+offset_right = -312.133
+offset_bottom = -189.728
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Control/Panel/Control"]
 layout_mode = 2

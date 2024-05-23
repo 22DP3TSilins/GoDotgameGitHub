@@ -4,6 +4,8 @@ using System.IO;
 using System.Text.Json;
 using System.Collections.Generic;
 using System.Linq;
+using System.ComponentModel;
+using System.Text.RegularExpressions;
 
 public partial class ScoreBoard : CanvasLayer
 {
@@ -15,8 +17,11 @@ public partial class ScoreBoard : CanvasLayer
 	CheckButton uiGenRndMaze = null;
 	Login login = null;
 	GameMode currentGameMode;
-	ScoreForPlayer[] leaderBoard = new ScoreForPlayer[4];
+	List<ScoreForPlayer> leaderBoard = new();
+	ScoreForPlayer scoreForPlayer = null;
+	VBoxContainer playerScores = null;
 	CanvasLayer map = null;
+	LineEdit search = null;
 	public override void _Ready()
 	{
 		string jsonData = File.ReadAllText("Data/Scores.json");
@@ -28,67 +33,38 @@ public partial class ScoreBoard : CanvasLayer
 		login = GetNode<Login>("../Login/Control");
 		ui = GetNode<UI>("../UI/Control");
 		uiGenRndMaze = ui.GetNode<CheckButton>("Panel/Control/HBoxContainer/Maze generation/MazeGeneration/VBoxContainer/HBoxContainer/CheckButton");
+		playerScores = GetNode<VBoxContainer>("Control/Panel/ScrollContainer/VBoxContainer");
 		map = GetNode<CanvasLayer>("../Map");
+		search = GetNode<LineEdit>("Control/Panel/LineEdit");
 
-		for (int i = 0; i < 4; i++) {
-			leaderBoard[i] = GetNode("Control/VBoxContainer").GetChild<ScoreForPlayer>(i+1);
-		}
+		// for (int i = 0; i < 4; i++) {
+		// 	leaderBoard[i] = GetNode("Control/VBoxContainer").GetChild<ScoreForPlayer>(i+1);
+		// }
+		scoreForPlayer = GetNode<ScoreForPlayer>("Control/Panel/UserScore");
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta)
 	{
-		IDictionary<string, TimeSpan> allScores = new Dictionary<string, TimeSpan>();
-		// GD.Print("ForEach start:");
-		foreach (KeyValuePair<string, UserData> userForEach in users) {
-			TimeSpan userScore = userForEach.Value.GetBestTime(user?.CurrentGameMode);
-			
-			if (userScore != TimeSpan.Zero) {
-				allScores.Add(userForEach.Value.Username, userScore);
-				// GD.Print($"i: {i} {i2} ss:");
-
-			} else {
-				// GD.Print($"i: {i} {i2} f:");
-			}
-		}
-		// GD.Print("ForEach end:\n");
-
-		var sorted = allScores.OrderBy(key => key.Value).ThenBy(key => key.Key);
 		
-		int IofUser = -1;
-		int i = 0;
-		if (!(user == null)) {
-			foreach (var userForEach in sorted) {
-				if (string.Compare(userForEach.Key, user.Username) == 0) IofUser = i;
-				i++;
-			}
-		}
-
-		for (i = 0; i < 3; i++) leaderBoard[i].ClearScore();
-
-		i = 0;
-		foreach (var playerScore in sorted) {
-			if (i > 3) break;
-			leaderBoard[i].SetScore(i + 1, playerScore.Key, playerScore.Value);
-			i++;
-		}
 		
-		if (user != null) {
+		if (user != null && sorted != null) {
 			
-			leaderBoard[3].SetScore(IofUser == -1 ? sorted.Count() + 1 : IofUser + 1, user.Username, user.GetTime);
+			scoreForPlayer.SetScore(IofUser == -1 ? sorted.Count() + 1 : IofUser + 1, user.Username, user.GetTime);
 		}
 	}
-	public void SetCurrentUser(string usernameHash, bool newUser, bool admin) {
+	public void SetUser(string usernameHash, bool newUser, bool admin) {
 		user?.Stop();
-		ui.SaveSettings(user);
+		ui.SaveSettings();
 		user?.Save(Player);
 		map.Visible = admin;
 		if (newUser) users.Add(usernameHash, new UserData(login.GetUsernameFromHash(usernameHash), admin));
 		user = users[usernameHash];
+
+		ui.LoadSettings();
 		user.Load();
-		ui.LoadSettings(user);
 		Player.Started = false;
-		user.GoTo(Player);
+		user.SetPos(Player);
 		ui._gen_maze(false, user.Finished || newUser);
 		user.Finished = false;
 		
@@ -104,7 +80,7 @@ public partial class ScoreBoard : CanvasLayer
 		if (what == NotificationWMCloseRequest) {
 			Stop();
 			user?.Save(Player);
-			ui.SaveSettings(user);
+			ui.SaveSettings();
 			
 			File.WriteAllText("Data/Scores.json", JsonSerializer.Serialize(users));
 			GetTree().Quit(); // default behavior
@@ -128,5 +104,70 @@ public partial class ScoreBoard : CanvasLayer
 	}
 	public void DeleteAccount() {
 		if (users.ContainsKey(login.currentUserHash)) users.Remove(login.currentUserHash);
+	}
+	private int IofUser = -1;
+	IDictionary<string, TimeSpan> allScores = new Dictionary<string, TimeSpan>();
+	IOrderedEnumerable<KeyValuePair<string, TimeSpan>> sorted = null;
+	Regex UserSerchRegex = new("");
+	public void ResetScoreBoard() {
+		UserSerchRegex = new($"^{search.Text}");
+		// Noņem visas vērtības no masīva
+		allScores.Clear();
+		foreach (KeyValuePair<string, UserData> userForEach in users) {
+
+			// Iegūst labāko laiku pašreizējajā spēles režīmā
+			TimeSpan userScore = userForEach.Value.GetBestTime(user?.CurrentGameMode);
+			
+			// Ja spēlētājam ir rezultāts pievieno to un asinhroni pieprasa tabulas rindu spēlētāja rezultāta parādīšanai
+			if (userScore != TimeSpan.Zero) {
+				ResourceLoader.LoadThreadedRequest("res://Scines/Levels/ScoreForPlayer.tscn");
+				allScores.Add(userForEach.Value.Username, userScore);
+			} 
+		}
+		
+		// Noņem iepriekšējās rezultātu rindas no tabulas
+		int i = 0;
+		ScoreForPlayer a;
+		while (true) {
+			a = playerScores.GetChildOrNull<ScoreForPlayer>(i);
+			if (a == null) break;
+			a.QueueFree();
+			i++;
+		}
+		
+		// Sakārto rezultātus
+		sorted = allScores.OrderBy(key => key.Value).ThenBy(key => key.Key);
+		
+		// Ievieto katra finišējušā spēlētāja datus
+		IofUser = -1;
+		PackedScene scoreForPlayerScene;
+		ScoreForPlayer scoreForPlayerForEach;
+		i = 0;
+		if (user != null) {
+			foreach (var playerScore in sorted) {
+				
+				// Pārbauda vai šis lietotājs ir pašreizējais lietotājs
+				if (string.Compare(playerScore.Key, user.Username) == 0) IofUser = i;
+				i++;
+
+				// Izvēlas lietotājus, kuri ir meklēti
+				if (!UserSerchRegex.Match(playerScore.Key).Success) continue;
+
+				// Izveido jaunu objektu ar kāda lietotāja rezultātu
+				scoreForPlayerScene = (PackedScene)ResourceLoader.LoadThreadedGet("res://Scines/Levels/ScoreForPlayer.tscn");
+				scoreForPlayerForEach = (ScoreForPlayer)scoreForPlayerScene.Instantiate();
+				scoreForPlayerForEach._Ready();
+				scoreForPlayerForEach.SetScore(i, playerScore.Key, playerScore.Value);
+				playerScores.AddChild(scoreForPlayerForEach);
+
+				
+			}
+		}
+		
+	}
+	private void PlayerSearched(string new_text)
+	{
+		ResetScoreBoard();
+		// Replace with function body.
 	}
 }

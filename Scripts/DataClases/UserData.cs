@@ -16,23 +16,17 @@ public class UserData {
 	public IDictionary<string, double> Settings {get; set;}
 	public TimeSpan TimeFinished {get; set;} = TimeSpan.Zero;
 	public GameMode CurrentGameMode {get; set;}
-	public float X {get; set;}
-	public float Y {get; set;}
-	public float Z {get; set;}
-	public bool Admin {get; set;}
-	// Saglabā laiku
-	// public void Finish(GameMode gameMode) {
-	// 	if (Admin) return;
+	// public Vector3 Pos {get; set;}
+	// public Vector3 Rot {get; set;}
+	public float PosX {get; set;}
+	public float PosY {get; set;}
+	public float PosZ {get; set;}
+	public float RotX {get; set;}
+	public float RotY {get; set;}
+	public float RotZ {get; set;}
 
-	// 	Finished = true;
-	// 	TimeFinished = DateTime.Now - Start;
-	// 	Stop();
-	// 	if (Scores.ContainsKey(gameMode)) {
-	// 		Scores[gameMode] = TimeFinished < Scores[gameMode] ? TimeFinished : Scores[gameMode];
-	// 	} else {
-	// 		Scores[gameMode] = TimeFinished;
-	// 	}
-	// }
+	public bool Admin {get; set;}
+	public Vector3 vector3 {get; set;} = new Vector3(2,4,5);
 	public void Finish() {
 		if (Admin) return;
 
@@ -84,22 +78,6 @@ public class UserData {
 		Admin = admin;
 		Scores = new Dictionary<GameMode, TimeSpan>();
 
-		// GameMode gameMode1 = new GameMode(5, 34, true);
-		// GameMode gameMode2 = new GameMode(5, 78, true);
-
-		// Scores.Add(gameMode1, new TimeSpan(4, 5, 6));
-		// Scores.Add(gameMode2, new TimeSpan(0, 5, 6));
-
-		// bool found1 = Scores.ContainsKey(gameMode1);
-		// bool found2 = Scores.ContainsKey(gameMode2);
-
-		// GD.Print(found1, found2);
-		// GD.Print(gameMode1.GetHashCode());
-		// GD.Print(gameMode2.GetHashCode());
-		// GD.Print(gameMode1.Equals(gameMode2));
-
-		// Scores = new Dictionary<GameMode, TimeSpan>();
-
 		Username = username;
 		ScoresStr = new Dictionary<string, TimeSpan>();
 
@@ -108,34 +86,32 @@ public class UserData {
 
 		// Defoulta gameMode ir izveidots no defoulta grūtības pakāpes
 		CurrentGameMode = new((int)Settings["Difficulty"], -1, true);
-
 	}
+
 	// Sāk laiku skaitīt no nulles
 	public void RestartTime() {
 		Start = DateTime.Now;
 		Finished = false;
 		WasJustStopped = false;
 	}
+
 	// Saglabā objektā pabeigšanas laikus
 	public void Save(player Player) {
-		GD.Print("Save");
 		ScoresStr.Clear();
 		
 		int i = 0;
 		foreach (KeyValuePair<GameMode, TimeSpan> score in Scores) {
-			GD.Print($"i: {i}\ngm: {score.Key}\nscore: {score.Value}\nHash: {score.Key.GetHashCode()}\nHashStr: {score.Key.ToString().GetHashCode()}");
 			i++;
 			ScoresStr.Add(score.Key.ToString(), score.Value);
 		}
-		SetPos(Player);
+		SavePos(Player);
 	}
+
 	// Ielādē objektā pabeigšanas laikus
 	public void Load() {
-		GD.Print("Load");
 		Scores.Clear();
 		int i = 0;
 		foreach (KeyValuePair<string, TimeSpan> score in ScoresStr) {
-			GD.Print($"i: {i}\ngm: {score.Key}\nscore: {score.Value}\nHash: {score.Key.GetHashCode()}\nHashStr: {score.Key.ToString().GetHashCode()}");
 			
 			// Izdzēš dublikātus
 			GameMode gameMode = new GameMode(score.Key);
@@ -147,16 +123,24 @@ public class UserData {
 			
 			i++;
 		}
-		// Player.Position = new Vector3(X, Y, Z);
 	}
-	// Saglabā spēlētāja pozīciju
-	public void SetPos(player Player) {
-		X = Player.Position.X;
-		Y = Player.Position.Y;
-		Z = Player.Position.Z;
+	// Saglabā spēlētāja pozīciju objektā
+	public void SavePos(player Player) {
+		// Pos = Player.Position;
+		// Rot = Player.Rotation;
+		PosX = Player.Position.X;
+		PosY = Player.Position.Y;
+		PosZ = Player.Position.Z;
+		RotX = Player.Rotation.X;
+		RotY = Player.Rotation.Y;
+		RotZ = Player.Rotation.Z;
 	}
 
-	public void GoTo(player Player) {
-		Player.Position = new Vector3(X, Y, Z);
+	// Novieto spēlētāju koordinātu vietā
+	public void SetPos(player Player) {
+	// 	Player.Position = Pos;
+	// 	Player.Rotation = Rot;
+		Player.Position = new Vector3(PosX, PosY, PosZ);
+		Player.Rotation = new Vector3(RotX, RotY, RotZ);
 	}
 }

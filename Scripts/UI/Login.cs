@@ -65,7 +65,7 @@ public partial class Login : Control
 			if (users[usernameHashed.HexEncode()].PasswordEqual(pepperedPassword)) {
 				GetParent<CanvasLayer>().Hide();
 				scores.Show();
-				scores.SetCurrentUser(usernameHashed.HexEncode(), false, usernameNode.Text.IndexOf('#') == 0);
+				scores.SetUser(usernameHashed.HexEncode(), false, usernameNode.Text.IndexOf('#') == 0);
 				Input.MouseMode = Input.MouseModeEnum.Captured;
 				currentUserHash = usernameHashed.HexEncode();
 
@@ -110,7 +110,7 @@ public partial class Login : Control
 		users.Add(usernameHashed.HexEncode(), new User(usernameNode.Text, passwordNode.Text));
 		GetParent<CanvasLayer>().Hide();
 		scores.Show();
-		scores.SetCurrentUser(usernameHashed.HexEncode(), true, usernameNode.Text.IndexOf('#') == 0);
+		scores.SetUser(usernameHashed.HexEncode(), true, usernameNode.Text.IndexOf('#') == 0);
 		Input.MouseMode = Input.MouseModeEnum.Captured;
 		currentUserHash = usernameHashed.HexEncode();
 	
